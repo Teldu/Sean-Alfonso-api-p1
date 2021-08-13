@@ -1,6 +1,5 @@
 package com.util;
 
-import com.datasourse.repos.RegistrationCatalog;
 import com.datasourse.repos.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.client.MongoClient;
