@@ -1,5 +1,6 @@
 package com.datasourse.repos;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -52,7 +53,30 @@ public class UserRepository implements CrudRepository<AppUser> {
     }
 
     @Override
-    public AppUser findById(int id) {
+    public AppUser findById(String id) {
+        try {
+            MongoClient mongoClient = MongoClientFactory.getInstance().getConnection();
+
+            MongoDatabase classDb = mongoClient.getDatabase("bookstore");
+            MongoCollection<Document> usersCollection = classDb.getCollection("users");
+            Document newUserDoc = new Document("id", id);
+            Document foundUser = usersCollection.find(newUserDoc).first();
+
+            if (foundUser == null) {
+                return null;
+            }
+
+            ObjectMapper mapper = new ObjectMapper();
+            AppUser authUser = mapper.readValue(foundUser.toJson(), AppUser.class);
+
+            return authUser;
+
+        } catch (JsonProcessingException jme) {
+            jme.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         return null;
     }
 
