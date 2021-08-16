@@ -17,11 +17,20 @@ public class AppUser {
     private String username;
     private String password;
     private Address address;
+    private Authorization authorization = Authorization.NONE;
     private LocalDateTime registrationTime;
     private List<String> registeredClasses = new ArrayList<String>();
 
     public AppUser() {
         super();
+    }
+
+    public Authorization getAuthorization() {
+        return authorization;
+    }
+
+    public void setAuthorization(Authorization authorization) {
+        this.authorization = authorization;
     }
 
     public AppUser(String firstName, String lastName, String email, String username, String password) {

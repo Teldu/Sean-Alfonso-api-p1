@@ -1,6 +1,7 @@
 package com.servlets;
 
 import com.documents.AppUser;
+import com.documents.Authorization;
 import com.dto.Principal;
 import com.dto.SheildedUser;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,6 +30,7 @@ public class UserServlet extends HttpServlet {
         this.userService = userService;
         System.out.println("UserSerlet is born");
     }
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession(false);
@@ -65,6 +67,7 @@ public class UserServlet extends HttpServlet {
         try{
 
             AppUser appUser = mapper.readValue(req.getInputStream() , AppUser.class);
+            appUser.setAuthorization(Authorization.STUDENT);
             Principal principal = new Principal(userService.register(appUser));
 
             String userInfo = mapper.writeValueAsString(principal);

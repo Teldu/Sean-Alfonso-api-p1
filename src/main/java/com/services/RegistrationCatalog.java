@@ -7,6 +7,8 @@ import com.mongodb.client.*;
 import com.util.MongoClientFactory;
 import com.util.exceptions.DataSourceException;
 import org.bson.Document;
+
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -28,7 +30,9 @@ public class RegistrationCatalog {
         this.className = className;
         this.students.add(students);
     }
-
+    public RegistrationCatalog(){
+        super();
+    }
 
     public RegistrationCatalog(String className){
         this.className = className;
@@ -93,7 +97,7 @@ public class RegistrationCatalog {
     }
 
     public RegistrationCatalog showRoster(RegistrationCatalog newUser, String className) {
-
+           // List<Document> doc = new ArrayList<>();
         try {
             MongoClient mongoClient = MongoClientFactory.getInstance().getConnection();
 
