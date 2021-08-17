@@ -1,6 +1,7 @@
 package com.servlets;
 
 import com.documents.Authorization;
+import com.dto.ClassDetails;
 import com.dto.Principal;
 import com.dto.SheildedUser;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -50,7 +51,8 @@ public class CourseEditorServlet extends HttpServlet {
             {
                 String courseName = req.getParameter("Course");
                 String courseTeacher = req.getParameter("Teacher");
-               // registrationCatalog.  TODO implement method that allows me to search for specific courses
+                ClassDetails courseDetails = registrationCatalog.GetClassDetailsOf(courseName);
+
             }
 
         }catch(Exception e)
