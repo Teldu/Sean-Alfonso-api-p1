@@ -2,7 +2,7 @@ version: 0.2
 
 phases:
   install:
-    runtime-version:
+    runtime-versions:
       java: corretto8
   pre_build:
     commands:
