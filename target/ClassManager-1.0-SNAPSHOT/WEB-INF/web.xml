@@ -1,12 +1,6 @@
 <web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
-<<<<<<< HEAD
-             http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
-=======
-            http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
->>>>>>> b09476bd3a9434f22840d894fa2ae069c4dc64a9
-         version="3.1">
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
 
     <display-name>Hello, Servlets!</display-name>
 
@@ -14,13 +8,12 @@
         <welcome-file>index.html</welcome-file>
     </welcome-file-list>
 
-<<<<<<< HEAD
-=======
+
     <Listeners>
         <listener>com/util/ContextLoaderListener</listener>
     </Listeners>
 
->>>>>>> b09476bd3a9434f22840d894fa2ae069c4dc64a9
+
     <servlet>
         <servlet-name>UserServlet</servlet-name>
         <servlet-class>com.servlets.UserServlet</servlet-class>
@@ -31,10 +24,6 @@
         <url-pattern>/user</url-pattern>
     </servlet-mapping>
 
-<<<<<<< HEAD
-</web-app>
-=======
 
 </web-app>
 
->>>>>>> b09476bd3a9434f22840d894fa2ae069c4dc64a9
