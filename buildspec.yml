@@ -6,14 +6,17 @@ phases:
       java: corretto8
   pre_build:
     commands:
-      - echo Nothing to do in the pre_build phase...
+      - aws s3 cp s3://sean-alfonso-api-p1/application.properties ./src/main/resources/application.properties
   build:
     commands:
       - echo Build started on 'date'
       - mvn package
+      - mv target/*.war ./classmanager.war
   post_build:
     commands:
       - echo Build completed on 'date'
+      - unzip classmanager.war -d artifact/
 artifacts:
   files:
-    - target/ClassManager-1.0-SNAPSHOT.war
+    - WEB-INF/**/*
+  name: artifact
