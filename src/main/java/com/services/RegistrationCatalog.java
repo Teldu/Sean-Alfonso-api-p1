@@ -209,16 +209,17 @@ public class RegistrationCatalog {
     }
 
     public void showClasses() {
-
+       List<ClassDetails> classDetailsList = new ArrayList<>();
         try {
             MongoClient mongoClient = MongoClientFactory.getInstance().getConnection();
 
             MongoDatabase classDb = mongoClient.getDatabase("classes");
 
-            MongoIterable<String> list = classDb.listCollectionNames();
-            //iterate through all collections in class DB and print
-            for (String name : list) {
-                System.out.println(name);
+            MongoIterable<Document> list = classDb.listCollections();
+            ObjectMapper mapper = new ObjectMapper();
+            //iterate through all collections in class DB and convert the documents to class detail pojos
+            for (Document classDoc : list) {
+                ClassDetails classDetails = mapper.readValue(classDoc.toJson() , ClassDetails.class );
             }
 
         } catch (Exception e) {

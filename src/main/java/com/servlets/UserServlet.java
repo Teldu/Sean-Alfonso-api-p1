@@ -82,7 +82,7 @@ public class UserServlet extends HttpServlet {
         catch(IOException ioe)
         {
             logger.error(ioe.getMessage());
-            resp.sendError(500 , "We are sorry...");
+            resp.sendError(404 , "File not found");
         }
         catch(Exception e)
         {
