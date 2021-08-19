@@ -25,6 +25,12 @@ public class ClassDetails {
         this.classSize = classSize;
         this.meetingPeriod = meetingPeriod;
     }
+    public ClassDetails(String className , int classSize, boolean open, LocalDateTime registrationTime, MeetingPeriods meetingPeriod) {
+        new ClassDetails(open , registrationTime);
+        this.classSize = classSize;
+        this.meetingPeriod = meetingPeriod;
+        this.className = className;
+    }
 
     public int getClassSize() {
         return classSize;

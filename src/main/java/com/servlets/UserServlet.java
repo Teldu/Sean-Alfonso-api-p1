@@ -28,7 +28,7 @@ public class UserServlet extends HttpServlet {
     public UserServlet(UserService userService , ObjectMapper mapper) {
         this.mapper = mapper;
         this.userService = userService;
-        System.out.println("UserSerlet is born");
+
     }
 
     @Override

@@ -2,12 +2,14 @@ package com.servlets;
 
 import com.documents.AppUser;
 import com.documents.Authorization;
+import com.dto.ClassDetails;
 import com.dto.Principal;
 import com.dto.SheildedUser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.services.RegistrationCatalog;
 import com.services.UserService;
+import com.util.exceptions.InvalidRequestException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -37,8 +39,8 @@ public class ViewCourseServlet  extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession(false);
-        SheildedUser sheildedUser = (session == null) ? null : (SheildedUser) session.getAttribute("auth-user");
-        if(sheildedUser == null)
+        Principal principal = (session == null) ? null : (Principal) session.getAttribute("auth-user");
+        if(principal == null)
         {
             resp.setStatus(401);
             return;
@@ -50,45 +52,26 @@ public class ViewCourseServlet  extends HttpServlet {
         try{
             if(courseName == null)
             {
-                registrationCatalog.;
-
-
+               List<ClassDetails> allClassDetails = registrationCatalog.showClasses();
+                respWriter.write(mapper.writeValueAsString(allClassDetails));
             }else   {
-                SheildedUser appUser = userService.FindUserById(userParam); // TODO implement find user by id method in user service
-                respWriter.write(mapper.writeValueAsString(appUser));
+                ClassDetails classDetails = registrationCatalog.GetClassDetailsOf(courseName);
+                respWriter.write(mapper.writeValueAsString(classDetails));
             }
 
-        }catch(Exception e)
+        }   catch(InvalidRequestException e)
         {
 
-        }
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setContentType("application/json");
-
-        PrintWriter respWriter = resp.getWriter();
-        try{
-
-        }
-        catch(MismatchedInputException mie)
-        {
-            logger.error(mie.getMessage());
-            resp.sendError(400 , "UnExpected Input");
-        }
-        catch(IOException ioe)
-        {
-            logger.error(ioe.getMessage());
-            resp.sendError(404 , "File not found");
+            resp.sendError(500 , "action cannot be completed");
+            return;
         }
         catch(Exception e)
         {
-            logger.error(e.getMessage());
-            resp.sendError(500 , "We are sorry");
+            resp.sendError(500 , "action cannot be completed");
+            return;
         }
-
-
     }
+
+
 
 }

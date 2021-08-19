@@ -1,5 +1,7 @@
 package com.services;
+import com.documents.MeetingPeriods;
 import com.dto.ClassDetails;
+import com.dto.SheildedUser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.client.*;
@@ -11,6 +13,7 @@ import com.util.exceptions.DataSourceException;
 import com.util.exceptions.InvalidRequestException;
 import org.bson.Document;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -57,12 +60,13 @@ public class RegistrationCatalog {
 
                 //inserting a new class detail pojo in order to proceed class data not related too students
                 MongoCollection<Document> usersCollection = classDb.getCollection(className);
-                Document newUserDoc = new Document("classSize", classDetails.getClassSize())
+                Document newClassDetailDoc = new Document("classSize", classDetails.getClassSize())
                                            .append("className", classDetails.getClassName())
                                            .append("open", classDetails.isOpen())
                                            .append("registrationTime" , classDetails.getRegistrationTime())
                                            .append("meetingPeriod" , classDetails.getMeetingPeriod());
-                usersCollection.insertOne(newUserDoc);
+
+                usersCollection.insertOne(newClassDetailDoc);
             } catch (Exception e){
               //  logger.error(e.getMessage());
                 System.out.println("Class already exists!");
@@ -208,7 +212,7 @@ public class RegistrationCatalog {
         }
     }
 
-    public void showClasses() {
+    public List<ClassDetails> showClasses() {
        List<ClassDetails> classDetailsList = new ArrayList<>();
         try {
             MongoClient mongoClient = MongoClientFactory.getInstance().getConnection();
@@ -216,11 +220,27 @@ public class RegistrationCatalog {
             MongoDatabase classDb = mongoClient.getDatabase("classes");
 
             MongoIterable<Document> list = classDb.listCollections();
+
             ObjectMapper mapper = new ObjectMapper();
             //iterate through all collections in class DB and convert the documents to class detail pojos
             for (Document classDoc : list) {
-                ClassDetails classDetails = mapper.readValue(classDoc.toJson() , ClassDetails.class );
+                // grab all relavant data to ClassDetail pojo
+                Object classSize = classDoc.get("classSize");
+                Object classname = classDoc.get("className");
+                Object classStatus = classDoc.get("open");
+                Object registrationTime = classDoc.get("registrationTime");
+                Object meetingPeriod = classDoc.get("meetingPeriod");
+                // create pojo
+                ClassDetails classDetails = new ClassDetails((String) classname  , (int)classSize, (boolean)classStatus ,(LocalDateTime) registrationTime , (MeetingPeriods)meetingPeriod);
+                if(classDetails == null)
+                {
+                    throw new InvalidRequestException("element list cannot be created : null");
+                }
+                // add pojo to list to then forward to servlet
+                classDetailsList.add(classDetails);
             }
+
+            return classDetailsList;
 
         } catch (Exception e) {
             //logger.error(e.getMessage());
@@ -336,7 +356,7 @@ public class RegistrationCatalog {
 
     }
 
-    public RegistrationCatalog register(RegistrationCatalog newUser, String classname) {
+    public boolean register(RegistrationCatalog newUser, String classname) {
 
         try {
             MongoClient mongoClient = MongoClientFactory.getInstance().getConnection();
@@ -348,6 +368,8 @@ public class RegistrationCatalog {
                 if (name.equalsIgnoreCase(classname)) {
                     //if provided class name matches a collection in DB, then it exists
                     collExists = true;
+                }else{
+                    return false;
                 }
             }
 
@@ -365,10 +387,48 @@ public class RegistrationCatalog {
 
             }
 
-            return newUser;
+            return true;
 
         } catch (Exception e) {
            // logger.error(e.getMessage());
+            throw new DataSourceException("An unexpected exception occurred.", e);
+        }
+    }
+    public boolean register(String newUser, String classname) {
+
+        try {
+            MongoClient mongoClient = MongoClientFactory.getInstance().getConnection();
+
+            MongoDatabase classDb = mongoClient.getDatabase("classes");
+            boolean collExists = false;
+            //used to check if a class already exists. does not register student if it does not
+            for (final String name : classDb.listCollectionNames()) {
+                if (name.equalsIgnoreCase(classname)) {
+                    //if provided class name matches a collection in DB, then it exists
+                    collExists = true;
+                }else{
+                    return false;
+                }
+            }
+
+            if(collExists){
+                try{
+                    //class exists: add student to class
+
+                    MongoCollection<Document> usersCollection = classDb.getCollection(classname);
+                    Document newUserDoc = new Document("Students", newUser);
+                    usersCollection.insertOne(newUserDoc);
+                }catch (Exception e){
+                    //   logger.error(e.getMessage());
+                    System.out.println("Student already registered");
+                }
+
+            }
+
+            return true;
+
+        } catch (Exception e) {
+            // logger.error(e.getMessage());
             throw new DataSourceException("An unexpected exception occurred.", e);
         }
     }
