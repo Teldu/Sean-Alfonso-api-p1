@@ -12,9 +12,9 @@
     </welcome-file-list>
 
 
-    <Listeners>
-        <listener>com/util/ContextLoaderListener</listener>
-    </Listeners>
+    <listener>
+        <listener-class>com.web.ContextLoaderListener</listener-class>
+    </listener>
 
 
 

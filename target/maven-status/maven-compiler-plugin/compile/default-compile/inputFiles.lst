@@ -7,6 +7,7 @@ C:\Users\Alfonso Holmes\Revature Bank\Sean-Alfonso-api-p1\src\main\java\com\serv
 C:\Users\Alfonso Holmes\Revature Bank\Sean-Alfonso-api-p1\src\main\java\com\datasourse\repos\CrudRepository.java
 C:\Users\Alfonso Holmes\Revature Bank\Sean-Alfonso-api-p1\src\main\java\com\services\UserService.java
 C:\Users\Alfonso Holmes\Revature Bank\Sean-Alfonso-api-p1\src\main\java\com\util\exceptions\ResourcePersistenceException.java
+C:\Users\Alfonso Holmes\Revature Bank\Sean-Alfonso-api-p1\src\main\java\com\web\ContextLoaderListener.java
 C:\Users\Alfonso Holmes\Revature Bank\Sean-Alfonso-api-p1\src\main\java\com\datasourse\repos\UserRepository.java
 C:\Users\Alfonso Holmes\Revature Bank\Sean-Alfonso-api-p1\src\main\java\com\util\exceptions\InvalidRequestException.java
 C:\Users\Alfonso Holmes\Revature Bank\Sean-Alfonso-api-p1\src\main\java\com\dto\Credentials.java
@@ -14,7 +15,6 @@ C:\Users\Alfonso Holmes\Revature Bank\Sean-Alfonso-api-p1\src\main\java\com\docu
 C:\Users\Alfonso Holmes\Revature Bank\Sean-Alfonso-api-p1\src\main\java\com\servlets\CourseEditorServlet.java
 C:\Users\Alfonso Holmes\Revature Bank\Sean-Alfonso-api-p1\src\main\java\com\servlets\ViewCourseServlet.java
 C:\Users\Alfonso Holmes\Revature Bank\Sean-Alfonso-api-p1\src\main\java\com\servlets\UserServlet.java
-C:\Users\Alfonso Holmes\Revature Bank\Sean-Alfonso-api-p1\src\main\java\com\util\ContextLoaderListener.java
 C:\Users\Alfonso Holmes\Revature Bank\Sean-Alfonso-api-p1\src\main\java\com\documents\Address.java
 C:\Users\Alfonso Holmes\Revature Bank\Sean-Alfonso-api-p1\src\main\java\com\util\exceptions\AuthenticationException.java
 C:\Users\Alfonso Holmes\Revature Bank\Sean-Alfonso-api-p1\src\main\java\com\documents\AppUser.java
@@ -23,4 +23,3 @@ C:\Users\Alfonso Holmes\Revature Bank\Sean-Alfonso-api-p1\src\main\java\com\Cors
 C:\Users\Alfonso Holmes\Revature Bank\Sean-Alfonso-api-p1\src\main\java\com\servlets\AddCourseServlet.java
 C:\Users\Alfonso Holmes\Revature Bank\Sean-Alfonso-api-p1\src\main\java\com\util\exceptions\ScreenNotFoundException.java
 C:\Users\Alfonso Holmes\Revature Bank\Sean-Alfonso-api-p1\src\main\java\com\dto\Principal.java
-C:\Users\Alfonso Holmes\Revature Bank\Sean-Alfonso-api-p1\src\main\java\com\util\AppServer.java

@@ -26,7 +26,7 @@ public class MongoClientFactory {
 
         try {
             ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-            appProperties.load(classLoader.getResourceAsStream("application.properties"));
+            appProperties.load(classLoader.getResourceAsStream("applications.properties"));
 
             String ipAddress = appProperties.getProperty("ipAddress");
             int port = Integer.parseInt(appProperties.getProperty("port"));

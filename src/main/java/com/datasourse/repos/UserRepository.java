@@ -14,11 +14,13 @@ import com.util.MongoClientFactory;
 import com.util.exceptions.DataSourceException;
 
 public class UserRepository implements CrudRepository<AppUser> {
+    public final MongoClient mongoClient;
 
+    public UserRepository(MongoClient mongoClient){ this.mongoClient = mongoClient;}
     public AppUser findUserByCredentials(String username, String password, String type) {
 
         try {
-            MongoClient mongoClient = MongoClientFactory.getInstance().getConnection();
+
             MongoDatabase classDatabase = mongoClient.getDatabase("bookstore");
             MongoCollection<Document> usersCollection = classDatabase.getCollection(type);
             Document queryDoc = new Document("username", username).append("password", password);
@@ -55,7 +57,7 @@ public class UserRepository implements CrudRepository<AppUser> {
     @Override
     public AppUser findById(String id) {
         try {
-            MongoClient mongoClient = MongoClientFactory.getInstance().getConnection();
+
 
             MongoDatabase classDb = mongoClient.getDatabase("bookstore");
             MongoCollection<Document> usersCollection = classDb.getCollection("users");
@@ -84,7 +86,7 @@ public class UserRepository implements CrudRepository<AppUser> {
     public AppUser save(AppUser newUser) {
 
         try {
-            MongoClient mongoClient = MongoClientFactory.getInstance().getConnection();
+
 
             MongoDatabase classDb = mongoClient.getDatabase("bookstore");
             MongoCollection<Document> usersCollection = classDb.getCollection("users");
@@ -109,7 +111,7 @@ public class UserRepository implements CrudRepository<AppUser> {
     public AppUser saveAdmin(AppUser newUser) {
 
         try {
-            MongoClient mongoClient = MongoClientFactory.getInstance().getConnection();
+
 
             MongoDatabase classDb = mongoClient.getDatabase("bookstore");
             MongoCollection<Document> usersCollection = classDb.getCollection("admin");
