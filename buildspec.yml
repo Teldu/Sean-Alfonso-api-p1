@@ -6,8 +6,7 @@ phases:
       java: corretto8
   pre_build:
     commands:
-
-      - aws s3 cp s3://sean-alfonso-api-p1-1/applications.properties ./src/main/resources/applications.properties
+      - aws s3 cp s3://sean-alfonso-api-p1/applications.properties ./src/main/resources/applications.properties
 
   build:
     commands:
