@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 C:\Users\Alfonso Holmes\Revature Bank\Sean-Alfonso-api-p1\src\main\java\com\dto\SheildedUser.java
 C:\Users\Alfonso Holmes\Revature Bank\Sean-Alfonso-api-p1\src\main\java\com\servlets\AuthServlet.java
 C:\Users\Alfonso Holmes\Revature Bank\Sean-Alfonso-api-p1\src\main\java\com\util\MongoClientFactory.java
@@ -23,3 +24,31 @@ C:\Users\Alfonso Holmes\Revature Bank\Sean-Alfonso-api-p1\src\main\java\com\Cors
 C:\Users\Alfonso Holmes\Revature Bank\Sean-Alfonso-api-p1\src\main\java\com\servlets\AddCourseServlet.java
 C:\Users\Alfonso Holmes\Revature Bank\Sean-Alfonso-api-p1\src\main\java\com\util\exceptions\ScreenNotFoundException.java
 C:\Users\Alfonso Holmes\Revature Bank\Sean-Alfonso-api-p1\src\main\java\com\dto\Principal.java
+=======
+C:\Users\Sean\Sean-Alfonso-api-p1\src\main\java\com\services\UserService.java
+C:\Users\Sean\Sean-Alfonso-api-p1\src\main\java\com\util\MongoClientFactory.java
+C:\Users\Sean\Sean-Alfonso-api-p1\src\main\java\com\util\exceptions\InvalidRequestException.java
+C:\Users\Sean\Sean-Alfonso-api-p1\src\main\java\com\servlets\AddCourseServlet.java
+C:\Users\Sean\Sean-Alfonso-api-p1\src\main\java\com\servlets\CourseEditorServlet.java
+C:\Users\Sean\Sean-Alfonso-api-p1\src\main\java\com\util\exceptions\AuthenticationException.java
+C:\Users\Sean\Sean-Alfonso-api-p1\src\main\java\com\documents\AppUser.java
+C:\Users\Sean\Sean-Alfonso-api-p1\src\main\java\com\CorsFilter.java
+C:\Users\Sean\Sean-Alfonso-api-p1\src\main\java\com\util\exceptions\ResourcePersistenceException.java
+C:\Users\Sean\Sean-Alfonso-api-p1\src\main\java\com\dto\ClassDetails.java
+C:\Users\Sean\Sean-Alfonso-api-p1\src\main\java\com\util\AppServer.java
+C:\Users\Sean\Sean-Alfonso-api-p1\src\main\java\com\services\RegistrationCatalog.java
+C:\Users\Sean\Sean-Alfonso-api-p1\src\main\java\com\documents\Address.java
+C:\Users\Sean\Sean-Alfonso-api-p1\src\main\java\com\util\exceptions\DataSourceException.java
+C:\Users\Sean\Sean-Alfonso-api-p1\src\main\java\com\documents\Authorization.java
+C:\Users\Sean\Sean-Alfonso-api-p1\src\main\java\com\dto\Credentials.java
+C:\Users\Sean\Sean-Alfonso-api-p1\src\main\java\com\servlets\ViewCourseServlet.java
+C:\Users\Sean\Sean-Alfonso-api-p1\src\main\java\com\dto\Principal.java
+C:\Users\Sean\Sean-Alfonso-api-p1\src\main\java\com\servlets\AuthServlet.java
+C:\Users\Sean\Sean-Alfonso-api-p1\src\main\java\com\util\ContextLoaderListener.java
+C:\Users\Sean\Sean-Alfonso-api-p1\src\main\java\com\documents\MeetingPeriods.java
+C:\Users\Sean\Sean-Alfonso-api-p1\src\main\java\com\servlets\UserServlet.java
+C:\Users\Sean\Sean-Alfonso-api-p1\src\main\java\com\util\exceptions\ScreenNotFoundException.java
+C:\Users\Sean\Sean-Alfonso-api-p1\src\main\java\com\datasourse\repos\UserRepository.java
+C:\Users\Sean\Sean-Alfonso-api-p1\src\main\java\com\datasourse\repos\CrudRepository.java
+C:\Users\Sean\Sean-Alfonso-api-p1\src\main\java\com\dto\SheildedUser.java
+>>>>>>> 1498a3968934fc1de7221c02c1076fbf765b8990
