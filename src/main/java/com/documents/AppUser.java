@@ -1,6 +1,7 @@
 package com.documents;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -9,6 +10,7 @@ import java.util.Objects;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AppUser {
+
 
     private String id;
     private String firstName;
@@ -59,6 +61,10 @@ public class AppUser {
     public AppUser(String id, String firstName, String lastName, String email, String username, String password, Address address, LocalDateTime registrationTime) {
         this(firstName, lastName, email, username, password, address, registrationTime);
         this.id = id;
+    }
+
+    public void setRegisteredClasses(List<String> registeredClasses) {
+        this.registeredClasses = registeredClasses;
     }
 
     public String getId() {

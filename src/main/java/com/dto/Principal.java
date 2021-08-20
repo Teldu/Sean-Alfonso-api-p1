@@ -1,7 +1,10 @@
 package com.dto;
 
 import com.documents.AppUser;
+import com.documents.Authorization;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Principal {
 
 
@@ -9,11 +12,13 @@ public class Principal {
     private String id;
     private String type;
 
+    public Principal() { }
+
     public Principal(AppUser appUser)
     {
        this.username =  appUser.getUsername();
        this.id = appUser.getId();
-
+       this.type = appUser.getAuthorization() == Authorization.STUDENT ? "STUDENT" : "ADMINISTRATOR";
     }
 
     public String getUsername() {

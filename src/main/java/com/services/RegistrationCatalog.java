@@ -46,10 +46,12 @@ public class RegistrationCatalog {
     }
 
 
-    public RegistrationCatalog save(ClassDetails classDetails, String className) {
+
+
+    public ClassDetails save(ClassDetails classDetails) {
 
         //setting class details class name to the class name provided to this method to later retrieve this class details object
-        classDetails.setClassName(className);
+         String className = classDetails.getClassName();
         try {
             MongoClient mongoClient = MongoClientFactory.getInstance().getConnection(); //connect to mongoDB
 
@@ -65,19 +67,20 @@ public class RegistrationCatalog {
                                            .append("open", classDetails.isOpen())
                                            .append("registrationTime" , classDetails.getRegistrationTime())
                                            .append("meetingPeriod" , classDetails.getMeetingPeriod());
-
+                if(usersCollection == null || newClassDetailDoc == null)
+                {
+                    return null;
+                }
                 usersCollection.insertOne(newClassDetailDoc);
+                return classDetails;
             } catch (Exception e){
               //  logger.error(e.getMessage());
                 System.out.println("Class already exists!");
-            }
-
-         return null;
-
-        } catch (Exception e) {
+            } } catch (Exception e) {
            // logger.error(e.getMessage());
             throw new DataSourceException("An unexpected exception occurred.", e);
         }
+        return null;
     }
 
     public boolean UpdateFull(ClassDetails classDetails)

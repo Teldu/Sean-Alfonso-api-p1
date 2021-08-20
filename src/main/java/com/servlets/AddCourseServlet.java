@@ -9,6 +9,7 @@ import com.util.exceptions.InvalidRequestException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -36,18 +37,19 @@ public class AddCourseServlet extends HttpServlet {
         resp.setContentType("application/json");
         HttpSession session = req.getSession(false);
         SheildedUser sheildedUser = (session == null) ? null : (SheildedUser) session.getAttribute("auth-user");
-
+        ClassDetails classDetails = mapper.readValue(req.getInputStream() , ClassDetails.class);
         if(sheildedUser == null)
         {
+            resp.sendRedirect("/auth");
             resp.setStatus(401);
             return;
         }
 
-        String courseName = req.getParameter("Course-Name");
+
         PrintWriter respWriter = resp.getWriter();
         try{
-            if(courseName != null) {
-                registrationCatalog.register(sheildedUser.getFirstName() + " " + sheildedUser.getLastName() , courseName);
+            if(classDetails != null) {
+                registrationCatalog.save(classDetails);
             }
 
         }   catch(InvalidRequestException e)

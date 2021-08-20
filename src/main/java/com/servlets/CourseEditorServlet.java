@@ -2,6 +2,7 @@ package com.servlets;
 
 import com.documents.Authorization;
 import com.dto.ClassDetails;
+import com.dto.Credentials;
 import com.dto.Principal;
 import com.dto.SheildedUser;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,9 +30,13 @@ public class CourseEditorServlet extends HttpServlet {
 
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+    }
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("application/json");
         HttpSession session = req.getSession(false);
         SheildedUser adminUser = (session == null) ? null : (SheildedUser) session.getAttribute("auth-user");
+
 
         if(adminUser == null)
         {
@@ -50,19 +55,14 @@ public class CourseEditorServlet extends HttpServlet {
                 resp.sendError(404 , "Unauthorized command");
             }else
             {
-                String courseName = req.getParameter("Course");
-                String courseTeacher = req.getParameter("Teacher");
-                ClassDetails courseDetails = registrationCatalog.GetClassDetailsOf(courseName);
-
+                ClassDetails classDetails = mapper.readValue(req.getInputStream() , ClassDetails.class);
+                ClassDetails courseDetails = registrationCatalog.GetClassDetailsOf(classDetails.getClassName());
             }
 
         }catch(Exception e)
         {
 
         }
-    }
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setContentType("application/json");
     }
 
 }

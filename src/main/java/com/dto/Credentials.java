@@ -1,11 +1,16 @@
 package com.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Credentials {
 
     private String username;
     private String password;
     private String type;
 
+
+    public Credentials(){ }
     public Credentials(String username ,String password , String type)
     {
         this.username = username;

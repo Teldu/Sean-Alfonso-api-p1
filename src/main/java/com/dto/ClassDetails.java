@@ -1,9 +1,10 @@
 package com.dto;
 
 import com.documents.MeetingPeriods;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.time.LocalDateTime;
-
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ClassDetails {
 
     private String className;
@@ -13,6 +14,8 @@ public class ClassDetails {
     private LocalDateTime registrationClosedTime;
     private MeetingPeriods meetingPeriod = MeetingPeriods.MWF;
 
+
+    public ClassDetails() { }
 
     public ClassDetails(boolean open , LocalDateTime registrationTime )
     {
