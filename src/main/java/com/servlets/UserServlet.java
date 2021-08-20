@@ -28,11 +28,12 @@ public class UserServlet extends HttpServlet {
     public UserServlet(UserService userService , ObjectMapper mapper) {
         this.mapper = mapper;
         this.userService = userService;
-        System.out.println("UserSerlet is born");
+
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.getWriter().write("<h1>Users Works!</h1>");
         HttpSession session = req.getSession(false);
         Principal principal = (session == null) ? null : (Principal) session.getAttribute("auth-user");
         if(principal == null)
@@ -82,7 +83,7 @@ public class UserServlet extends HttpServlet {
         catch(IOException ioe)
         {
             logger.error(ioe.getMessage());
-            resp.sendError(500 , "We are sorry...");
+            resp.sendError(404 , "File not found");
         }
         catch(Exception e)
         {

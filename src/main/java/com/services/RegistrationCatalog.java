@@ -1,4 +1,8 @@
 package com.services;
+import com.documents.MeetingPeriods;
+import com.dto.ClassDetails;
+import com.dto.SheildedUser;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.client.*;
 
@@ -6,9 +10,12 @@ import com.mongodb.client.*;
 
 import com.util.MongoClientFactory;
 import com.util.exceptions.DataSourceException;
+import com.util.exceptions.InvalidRequestException;
 import org.bson.Document;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -38,8 +45,11 @@ public class RegistrationCatalog {
         this.className = className;
     }
 
-    public RegistrationCatalog save(RegistrationCatalog newUser, String className) {
 
+    public RegistrationCatalog save(ClassDetails classDetails, String className) {
+
+        //setting class details class name to the class name provided to this method to later retrieve this class details object
+        classDetails.setClassName(className);
         try {
             MongoClient mongoClient = MongoClientFactory.getInstance().getConnection(); //connect to mongoDB
 
@@ -47,12 +57,22 @@ public class RegistrationCatalog {
             //sets db to classes. all class names and student rosters exist here
             try{
                 classDb.createCollection(className); //create new collection with class name
-            }catch (Exception e){
+
+                //inserting a new class detail pojo in order to proceed class data not related too students
+                MongoCollection<Document> usersCollection = classDb.getCollection(className);
+                Document newClassDetailDoc = new Document("classSize", classDetails.getClassSize())
+                                           .append("className", classDetails.getClassName())
+                                           .append("open", classDetails.isOpen())
+                                           .append("registrationTime" , classDetails.getRegistrationTime())
+                                           .append("meetingPeriod" , classDetails.getMeetingPeriod());
+
+                usersCollection.insertOne(newClassDetailDoc);
+            } catch (Exception e){
               //  logger.error(e.getMessage());
                 System.out.println("Class already exists!");
             }
 
-            return newUser; //has no actual functionality
+         return null;
 
         } catch (Exception e) {
            // logger.error(e.getMessage());
@@ -60,6 +80,121 @@ public class RegistrationCatalog {
         }
     }
 
+    public boolean UpdateFull(ClassDetails classDetails)
+    {
+        if(classDetails == null)
+        {
+            throw new InvalidRequestException("Cannot Search with null resource");
+        }
+        try {
+            MongoClient mongoClient = MongoClientFactory.getInstance().getConnection();
+
+            MongoDatabase classDb = mongoClient.getDatabase("classes");
+            Document courseDescription = new Document("className" , classDetails.getClassName());
+            Document authCourseDoc = classDb.getCollection(classDetails.getClassName())
+                                            .findOneAndUpdate(courseDescription , new Document("classSize", classDetails.getClassSize())
+                                                                                        .append("className", classDetails.getClassName())
+                                                                                        .append("open", classDetails.isOpen())
+                                                                                        .append("registrationTime" , classDetails.getRegistrationTime())
+                                                                                        .append("meetingPeriod" , classDetails.getMeetingPeriod()));
+
+           if(authCourseDoc == null)
+               return false;
+
+
+
+        }catch (Exception e)
+        {
+
+        }
+        return true;
+    }
+
+    public boolean UpdateClassSize(String className , int classSize)
+    {
+        if(className == null || classSize < 0 )
+        {
+            throw new InvalidRequestException("Cannot Search with null resource");
+        }
+
+        if(classSize < 10)
+        {
+            classSize = 24;
+        }
+
+        try {
+            MongoClient mongoClient = MongoClientFactory.getInstance().getConnection();
+
+            MongoDatabase classDb = mongoClient.getDatabase("classes");
+            Document courseDescription = new Document("className" , className);
+            Document authCourseDoc = classDb.getCollection(className)
+                    .findOneAndUpdate(courseDescription , new Document("classSize", classSize));
+
+            if(authCourseDoc == null)
+                return false;
+
+
+
+        }catch (Exception e)
+        {
+
+        }
+        return true;
+    }
+
+    public boolean UpdateClassStatus(String className , boolean open)
+    {
+        if(className == null)
+        {
+            throw new InvalidRequestException("Cannot Search with null resource");
+        }
+
+        try {
+            MongoClient mongoClient = MongoClientFactory.getInstance().getConnection();
+
+            MongoDatabase classDb = mongoClient.getDatabase("classes");
+            Document courseDescription = new Document("className" , className);
+            Document authCourseDoc = classDb.getCollection(className)
+                    .findOneAndUpdate(courseDescription , new Document("open",open));
+
+            if(authCourseDoc == null)
+                return false;
+
+
+
+        }catch (Exception e)
+        {
+
+        }
+        return true;
+    }
+
+    public boolean UpdateClassStartDate(String className , Date date)
+    {
+        if(className == null)
+        {
+            throw new InvalidRequestException("Cannot Search with null resource");
+        }
+
+        try {
+            MongoClient mongoClient = MongoClientFactory.getInstance().getConnection();
+
+            MongoDatabase classDb = mongoClient.getDatabase("classes");
+            Document courseDescription = new Document("className" , className);
+            Document authCourseDoc = classDb.getCollection(className)
+                    .findOneAndUpdate(courseDescription , new Document("registrationTime", date));
+
+            if(authCourseDoc == null)
+                return false;
+
+
+
+        }catch (Exception e)
+        {
+
+        }
+        return true;
+    }
 
     public RegistrationCatalog delete(RegistrationCatalog newUser, String name) {
 
@@ -77,18 +212,35 @@ public class RegistrationCatalog {
         }
     }
 
-    public void showClasses() {
-
+    public List<ClassDetails> showClasses() {
+       List<ClassDetails> classDetailsList = new ArrayList<>();
         try {
             MongoClient mongoClient = MongoClientFactory.getInstance().getConnection();
 
             MongoDatabase classDb = mongoClient.getDatabase("classes");
 
-            MongoIterable<String> list = classDb.listCollectionNames();
-            //iterate through all collections in class DB and print
-            for (String name : list) {
-                System.out.println(name);
+            MongoIterable<Document> list = classDb.listCollections();
+
+            ObjectMapper mapper = new ObjectMapper();
+            //iterate through all collections in class DB and convert the documents to class detail pojos
+            for (Document classDoc : list) {
+                // grab all relavant data to ClassDetail pojo
+                Object classSize = classDoc.get("classSize");
+                Object classname = classDoc.get("className");
+                Object classStatus = classDoc.get("open");
+                Object registrationTime = classDoc.get("registrationTime");
+                Object meetingPeriod = classDoc.get("meetingPeriod");
+                // create pojo
+                ClassDetails classDetails = new ClassDetails((String) classname  , (int)classSize, (boolean)classStatus ,(LocalDateTime) registrationTime , (MeetingPeriods)meetingPeriod);
+                if(classDetails == null)
+                {
+                    throw new InvalidRequestException("element list cannot be created : null");
+                }
+                // add pojo to list to then forward to servlet
+                classDetailsList.add(classDetails);
             }
+
+            return classDetailsList;
 
         } catch (Exception e) {
             //logger.error(e.getMessage());
@@ -150,6 +302,38 @@ public class RegistrationCatalog {
         return reg;
     }
 
+    public ClassDetails GetClassDetailsOf(String className)
+    {
+        try{
+            MongoClient mongoClient = MongoClientFactory.getInstance().getConnection();
+            MongoDatabase classDb = mongoClient.getDatabase("classes");
+
+            Document queryDoc = new Document("className" , className);
+            Document authDoc = classDb.getCollection(className).find(queryDoc).first();
+
+            if(authDoc ==null)
+            {
+                System.out.println("Null could not find doc");
+                return null;
+            }
+
+            ObjectMapper mapper = new ObjectMapper();
+            ClassDetails classDetails = mapper.readValue(authDoc.toJson() , ClassDetails.class);
+            return classDetails;
+
+        }catch (JsonProcessingException jpe)
+        {
+            System.out.println("Mapping Error");
+            jpe.printStackTrace();
+
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
     public List<String> getAllCollections(List<String> classNames){
         try {
             MongoClient mongoClient = MongoClientFactory.getInstance().getConnection();
@@ -172,7 +356,7 @@ public class RegistrationCatalog {
 
     }
 
-    public RegistrationCatalog register(RegistrationCatalog newUser, String classname) {
+    public boolean register(RegistrationCatalog newUser, String classname) {
 
         try {
             MongoClient mongoClient = MongoClientFactory.getInstance().getConnection();
@@ -184,6 +368,8 @@ public class RegistrationCatalog {
                 if (name.equalsIgnoreCase(classname)) {
                     //if provided class name matches a collection in DB, then it exists
                     collExists = true;
+                }else{
+                    return false;
                 }
             }
 
@@ -201,10 +387,48 @@ public class RegistrationCatalog {
 
             }
 
-            return newUser;
+            return true;
 
         } catch (Exception e) {
            // logger.error(e.getMessage());
+            throw new DataSourceException("An unexpected exception occurred.", e);
+        }
+    }
+    public boolean register(String newUser, String classname) {
+
+        try {
+            MongoClient mongoClient = MongoClientFactory.getInstance().getConnection();
+
+            MongoDatabase classDb = mongoClient.getDatabase("classes");
+            boolean collExists = false;
+            //used to check if a class already exists. does not register student if it does not
+            for (final String name : classDb.listCollectionNames()) {
+                if (name.equalsIgnoreCase(classname)) {
+                    //if provided class name matches a collection in DB, then it exists
+                    collExists = true;
+                }else{
+                    return false;
+                }
+            }
+
+            if(collExists){
+                try{
+                    //class exists: add student to class
+
+                    MongoCollection<Document> usersCollection = classDb.getCollection(classname);
+                    Document newUserDoc = new Document("Students", newUser);
+                    usersCollection.insertOne(newUserDoc);
+                }catch (Exception e){
+                    //   logger.error(e.getMessage());
+                    System.out.println("Student already registered");
+                }
+
+            }
+
+            return true;
+
+        } catch (Exception e) {
+            // logger.error(e.getMessage());
             throw new DataSourceException("An unexpected exception occurred.", e);
         }
     }

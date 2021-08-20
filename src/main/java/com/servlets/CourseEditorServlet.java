@@ -1,6 +1,7 @@
 package com.servlets;
 
 import com.documents.Authorization;
+import com.dto.ClassDetails;
 import com.dto.Principal;
 import com.dto.SheildedUser;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,6 +29,7 @@ public class CourseEditorServlet extends HttpServlet {
 
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.setContentType("application/json");
         HttpSession session = req.getSession(false);
         SheildedUser adminUser = (session == null) ? null : (SheildedUser) session.getAttribute("auth-user");
 
@@ -50,7 +52,8 @@ public class CourseEditorServlet extends HttpServlet {
             {
                 String courseName = req.getParameter("Course");
                 String courseTeacher = req.getParameter("Teacher");
-               // registrationCatalog.  TODO implement method that allows me to search for specific courses
+                ClassDetails courseDetails = registrationCatalog.GetClassDetailsOf(courseName);
+
             }
 
         }catch(Exception e)
@@ -59,7 +62,7 @@ public class CourseEditorServlet extends HttpServlet {
         }
     }
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+        resp.setContentType("application/json");
     }
 
 }
