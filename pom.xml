@@ -129,7 +129,7 @@
                 <url>http://localhost:8080/manager/text</url>
 
                 <!-- The context path we want the application deployed to -->
-                <path>/servlet-intro</path>
+                <path>/Registry</path>
 
                 <!--
                     Allows easily replace an older version of the app without having to run
