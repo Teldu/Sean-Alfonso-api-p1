@@ -13,7 +13,7 @@
 
 
     <Listeners>
-        <listener>com/util/ContextLoaderListener</listener>
+        <listener>src/com/util/ContextLoaderListener</listener>
     </Listeners>
 
 

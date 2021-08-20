@@ -33,6 +33,7 @@ public class UserServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.getWriter().write("<h1>Users Works!</h1>");
         HttpSession session = req.getSession(false);
         Principal principal = (session == null) ? null : (Principal) session.getAttribute("auth-user");
         if(principal == null)

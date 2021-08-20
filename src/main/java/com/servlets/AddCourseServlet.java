@@ -33,6 +33,7 @@ public class AddCourseServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.setContentType("application/json");
         HttpSession session = req.getSession(false);
         SheildedUser sheildedUser = (session == null) ? null : (SheildedUser) session.getAttribute("auth-user");
 

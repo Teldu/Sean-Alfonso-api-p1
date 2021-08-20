@@ -33,7 +33,7 @@ public class AuthServlet extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+        resp.getWriter().write("<h1>Auth!</h1>");
         PrintWriter respWriter = resp.getWriter();
         resp.setContentType("application/json");
 

@@ -38,6 +38,7 @@ public class ViewCourseServlet  extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.setContentType("application/json");
         HttpSession session = req.getSession(false);
         Principal principal = (session == null) ? null : (Principal) session.getAttribute("auth-user");
         if(principal == null)
