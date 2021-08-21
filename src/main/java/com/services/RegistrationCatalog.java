@@ -1,4 +1,5 @@
 package com.services;
+import com.documents.AppUser;
 import com.documents.MeetingPeriods;
 import com.documents.ClassDetails;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -11,12 +12,19 @@ import com.util.MongoClientFactory;
 import com.util.exceptions.DataSourceException;
 import com.util.exceptions.InvalidRequestException;
 import org.bson.Document;
+import org.bson.codecs.configuration.CodecProvider;
+import org.bson.codecs.configuration.CodecRegistry;
+import org.bson.codecs.pojo.PojoCodecProvider;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+
+import static com.mongodb.MongoClientSettings.getDefaultCodecRegistry;
+import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
+import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
 
 public class RegistrationCatalog {
@@ -26,7 +34,9 @@ public class RegistrationCatalog {
     private int classSize;
     private List<String> students;
     private ObjectMapper mapper = new ObjectMapper();
-
+    String DatabaseName = "SchoolDatabase";
+    CodecProvider pojoCodecProvider = PojoCodecProvider.builder().automatic(true).build();
+    CodecRegistry pojoCodecRegistry = fromRegistries(getDefaultCodecRegistry(), fromProviders(pojoCodecProvider));
     public RegistrationCatalog(String className, int classSize){
         this.className = className;
         this.classSize = classSize;
@@ -48,29 +58,22 @@ public class RegistrationCatalog {
 
 
     public ClassDetails save(ClassDetails classDetails) {
-
-        //setting class details class name to the class name provided to this method to later retrieve this class details object
-         String classname = classDetails.getClassName();
         try {
             MongoClient mongoClient = MongoClientFactory.getInstance().getConnection(); //connect to mongoDB
 
-            MongoDatabase classDb = mongoClient.getDatabase("classes");
+            MongoDatabase classDb = mongoClient.getDatabase(DatabaseName);
             //sets db to classes. all class names and student rosters exist here
 
-                classDb.createCollection(classname); //create new collection with class name
-
                 //inserting a new class detail pojo in order to proceed class data not related too students
-                MongoCollection<Document> usersCollection = classDb.getCollection(classname);
+                MongoCollection<Document> usersCollection = classDb.getCollection("Courses");
                 String classDetailAsString = mapper.writeValueAsString(classDetails);
                 Document newClassDetailDoc = Document.parse(classDetailAsString);
 
-                System.out.println("Out side if");
+
                 if(newClassDetailDoc == null )
                 {
-                    System.out.println("in side if");
                     return null;
                 }else{
-                    System.out.println("in side else");
                     usersCollection.insertOne(newClassDetailDoc);
                     return classDetails;
                 }
@@ -90,7 +93,7 @@ public class RegistrationCatalog {
         try {
             MongoClient mongoClient = MongoClientFactory.getInstance().getConnection();
 
-            MongoDatabase classDb = mongoClient.getDatabase("classes");
+            MongoDatabase classDb = mongoClient.getDatabase(DatabaseName);
             Document courseDescription = new Document("className" , classDetails.getClassName());
             Document authCourseDoc = classDb.getCollection(classDetails.getClassName())
                                             .findOneAndUpdate(courseDescription , new Document("classSize", classDetails.getClassSize())
@@ -111,6 +114,65 @@ public class RegistrationCatalog {
         return true;
     }
 
+    /**
+     *
+     * @param courseName
+     * @param dropedStudent
+     */
+    public void RemoveStudentFromCourse(String courseName , String dropedStudent) {
+        try {
+            MongoClient mongoClient = MongoClientFactory.getInstance().getConnection();
+
+            MongoDatabase registraiondb = mongoClient.getDatabase(DatabaseName).withCodecRegistry(pojoCodecRegistry);
+            MongoCollection<ClassDetails> courseCollection = registraiondb.getCollection("Courses", ClassDetails.class);
+            Document queryDoc = new Document("className", courseName);
+            ClassDetails targetCourse = courseCollection.find(queryDoc).first();
+
+            if (targetCourse == null) {
+                String msg = String.format("For some reason the targeted course could not be found in the db using: %s, %s\n", courseName, 4);
+                throw new RuntimeException(msg);
+            }
+
+            targetCourse.RemoveStudentFromList(dropedStudent);
+
+            courseCollection.findOneAndUpdate(queryDoc, new Document("$pull", new Document("studentsRegistered", dropedStudent)));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new DataSourceException("Unexpected exception", e);
+        }
+    }
+
+    /**
+     *
+     * @param courseName
+     * @param addedStudent
+     */
+    public void AddStudentToCourse(String courseName , String addedStudent) {
+        try {
+            MongoClient mongoClient = MongoClientFactory.getInstance().getConnection();
+
+            MongoDatabase registraiondb = mongoClient.getDatabase(DatabaseName).withCodecRegistry(pojoCodecRegistry);
+            MongoCollection<ClassDetails> courseCollection = registraiondb.getCollection("Courses", ClassDetails.class);
+            Document queryDoc = new Document("className", courseName);
+            ClassDetails targetCourse = courseCollection.find(queryDoc).first();
+
+            if (targetCourse == null) {
+                String msg = String.format("For some reason the targeted course could not be found in the db using: %s, %s\n", courseName, 4);
+                throw new RuntimeException(msg);
+            }
+
+            targetCourse.RemoveStudentFromList(addedStudent);
+
+            courseCollection.findOneAndUpdate(queryDoc, new Document("$push", new Document("studentsRegistered", addedStudent)));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new DataSourceException("Unexpected exception", e);
+        }
+    }
+
+
     public boolean UpdateClassSize(String className , int classSize)
     {
         if(className == null || classSize < 0 )
@@ -126,7 +188,7 @@ public class RegistrationCatalog {
         try {
             MongoClient mongoClient = MongoClientFactory.getInstance().getConnection();
 
-            MongoDatabase classDb = mongoClient.getDatabase("classes");
+            MongoDatabase classDb = mongoClient.getDatabase(DatabaseName);
             Document courseDescription = new Document("className" , className);
             Document authCourseDoc = classDb.getCollection(className)
                     .findOneAndUpdate(courseDescription , new Document("classSize", classSize));
@@ -153,7 +215,7 @@ public class RegistrationCatalog {
         try {
             MongoClient mongoClient = MongoClientFactory.getInstance().getConnection();
 
-            MongoDatabase classDb = mongoClient.getDatabase("classes");
+            MongoDatabase classDb = mongoClient.getDatabase(DatabaseName);
             Document courseDescription = new Document("className" , className);
             Document authCourseDoc = classDb.getCollection(className)
                     .findOneAndUpdate(courseDescription , new Document("open",open));
@@ -180,7 +242,7 @@ public class RegistrationCatalog {
         try {
             MongoClient mongoClient = MongoClientFactory.getInstance().getConnection();
 
-            MongoDatabase classDb = mongoClient.getDatabase("classes");
+            MongoDatabase classDb = mongoClient.getDatabase(DatabaseName);
             Document courseDescription = new Document("className" , className);
             Document authCourseDoc = classDb.getCollection(className)
                     .findOneAndUpdate(courseDescription , new Document("registrationTime", date));
@@ -202,7 +264,7 @@ public class RegistrationCatalog {
         try {
             MongoClient mongoClient = MongoClientFactory.getInstance().getConnection();
 
-            MongoDatabase classDb = mongoClient.getDatabase("classes");
+            MongoDatabase classDb = mongoClient.getDatabase(DatabaseName);
             classDb.getCollection(name).drop(); //deletes collection with class name
 
             return newUser;
@@ -218,7 +280,7 @@ public class RegistrationCatalog {
         try {
             MongoClient mongoClient = MongoClientFactory.getInstance().getConnection();
 
-            MongoDatabase classDb = mongoClient.getDatabase("classes");
+            MongoDatabase classDb = mongoClient.getDatabase(DatabaseName);
 
             MongoIterable<Document> list = classDb.listCollections();
 
@@ -254,7 +316,7 @@ public class RegistrationCatalog {
         try {
             MongoClient mongoClient = MongoClientFactory.getInstance().getConnection();
 
-            MongoDatabase classDb = mongoClient.getDatabase("classes");
+            MongoDatabase classDb = mongoClient.getDatabase(DatabaseName);
             MongoCollection<Document> usersCollection = classDb.getCollection(className);
             //document enables reading collection contents with .find(), i.e student names
 
@@ -281,7 +343,7 @@ public class RegistrationCatalog {
         try {
             MongoClient mongoClient = MongoClientFactory.getInstance().getConnection();
 
-            MongoDatabase classDb = mongoClient.getDatabase("classes");
+            MongoDatabase classDb = mongoClient.getDatabase(DatabaseName);
             MongoCollection<Document> usersCollection = classDb.getCollection(className);
 
             FindIterable<Document> iterDoc = usersCollection.find();
@@ -307,7 +369,7 @@ public class RegistrationCatalog {
     {
         try{
             MongoClient mongoClient = MongoClientFactory.getInstance().getConnection();
-            MongoDatabase classDb = mongoClient.getDatabase("classes");
+            MongoDatabase classDb = mongoClient.getDatabase(DatabaseName);
 
             Document queryDoc = new Document("className" , className);
             Document authDoc = classDb.getCollection(className).find(queryDoc).first();
@@ -339,7 +401,7 @@ public class RegistrationCatalog {
         try {
             MongoClient mongoClient = MongoClientFactory.getInstance().getConnection();
 
-            MongoDatabase classDb = mongoClient.getDatabase("classes");
+            MongoDatabase classDb = mongoClient.getDatabase(DatabaseName);
 
             MongoIterable<String> list = classDb.listCollectionNames();
             //adds all classes in DB to a string list.
@@ -362,7 +424,7 @@ public class RegistrationCatalog {
         try {
             MongoClient mongoClient = MongoClientFactory.getInstance().getConnection();
 
-            MongoDatabase classDb = mongoClient.getDatabase("classes");
+            MongoDatabase classDb = mongoClient.getDatabase(DatabaseName);
             boolean collExists = false;
             //used to check if a class already exists. does not register student if it does not
             for (final String name : classDb.listCollectionNames()) {
@@ -400,7 +462,7 @@ public class RegistrationCatalog {
         try {
             MongoClient mongoClient = MongoClientFactory.getInstance().getConnection();
 
-            MongoDatabase classDb = mongoClient.getDatabase("classes");
+            MongoDatabase classDb = mongoClient.getDatabase(DatabaseName);
             boolean collExists = false;
             //used to check if a class already exists. does not register student if it does not
             for (final String name : classDb.listCollectionNames()) {
@@ -438,7 +500,7 @@ public class RegistrationCatalog {
         try {
             MongoClient mongoClient = MongoClientFactory.getInstance().getConnection();
 
-            MongoDatabase classDb = mongoClient.getDatabase("classes");
+            MongoDatabase classDb = mongoClient.getDatabase(DatabaseName);
             MongoCollection<Document> usersCollection = classDb.getCollection(className);
             Document newUserDoc = new Document("Students", newUser.getClassName());
 

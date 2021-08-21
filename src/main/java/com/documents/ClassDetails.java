@@ -3,6 +3,9 @@ package com.documents;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ClassDetails {
 
@@ -12,6 +15,7 @@ public class ClassDetails {
     private LocalDateTime registrationTime;
     private LocalDateTime registrationClosedTime;
     private MeetingPeriods meetingPeriod = MeetingPeriods.MWF;
+    private List<String> studentsRegistered = new ArrayList<>();
 
 
     public ClassDetails() { }
@@ -32,6 +36,22 @@ public class ClassDetails {
         this.classSize = classSize;
         this.meetingPeriod = meetingPeriod;
         this.className = className;
+    }
+
+    public void AddStudentToList(String studentName)
+    {
+        if(!studentsRegistered.contains(studentName))
+        {
+            studentsRegistered.add(studentName);
+        }
+    }
+
+    public void RemoveStudentFromList(String studentsName)
+    {
+        if(studentsRegistered.contains(studentsName))
+        {
+            studentsRegistered.remove(studentsName);
+        }
     }
 
     public int getClassSize() {

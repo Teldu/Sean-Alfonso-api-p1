@@ -75,6 +75,15 @@ public class UserService {
 
     }
 
+    public void AddClass(String courseName , String addedStudent)
+    {
+
+    }
+
+    public void DropClass(String courseName , String dropedStudent)
+    {
+
+    }
     public boolean isUserValid(AppUser user) {
         if (user == null) return false;
         if (user.getFirstName() == null || user.getFirstName().trim().equals("")) return false;
