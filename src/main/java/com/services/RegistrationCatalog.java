@@ -1,7 +1,6 @@
 package com.services;
 import com.documents.MeetingPeriods;
-import com.dto.ClassDetails;
-import com.dto.SheildedUser;
+import com.documents.ClassDetails;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.client.*;
@@ -51,36 +50,35 @@ public class RegistrationCatalog {
     public ClassDetails save(ClassDetails classDetails) {
 
         //setting class details class name to the class name provided to this method to later retrieve this class details object
-         String className = classDetails.getClassName();
+         String classname = classDetails.getClassName();
         try {
             MongoClient mongoClient = MongoClientFactory.getInstance().getConnection(); //connect to mongoDB
 
             MongoDatabase classDb = mongoClient.getDatabase("classes");
             //sets db to classes. all class names and student rosters exist here
-            try{
-                classDb.createCollection(className); //create new collection with class name
+
+                classDb.createCollection(classname); //create new collection with class name
 
                 //inserting a new class detail pojo in order to proceed class data not related too students
-                MongoCollection<Document> usersCollection = classDb.getCollection(className);
-                Document newClassDetailDoc = new Document("classSize", classDetails.getClassSize())
-                                           .append("className", classDetails.getClassName())
-                                           .append("open", classDetails.isOpen())
-                                           .append("registrationTime" , classDetails.getRegistrationTime())
-                                           .append("meetingPeriod" , classDetails.getMeetingPeriod());
-                if(usersCollection == null || newClassDetailDoc == null)
+                MongoCollection<Document> usersCollection = classDb.getCollection(classname);
+                String classDetailAsString = mapper.writeValueAsString(classDetails);
+                Document newClassDetailDoc = Document.parse(classDetailAsString);
+
+                System.out.println("Out side if");
+                if(newClassDetailDoc == null )
                 {
+                    System.out.println("in side if");
                     return null;
+                }else{
+                    System.out.println("in side else");
+                    usersCollection.insertOne(newClassDetailDoc);
+                    return classDetails;
                 }
-                usersCollection.insertOne(newClassDetailDoc);
-                return classDetails;
-            } catch (Exception e){
-              //  logger.error(e.getMessage());
-                System.out.println("Class already exists!");
-            } } catch (Exception e) {
+        } catch (Exception e) {
            // logger.error(e.getMessage());
             throw new DataSourceException("An unexpected exception occurred.", e);
         }
-        return null;
+
     }
 
     public boolean UpdateFull(ClassDetails classDetails)

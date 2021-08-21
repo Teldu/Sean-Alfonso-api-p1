@@ -1,9 +1,7 @@
 package com.servlets;
 
 import com.documents.Authorization;
-import com.dto.ClassDetails;
-import com.dto.Credentials;
-import com.dto.Principal;
+import com.documents.ClassDetails;
 import com.dto.SheildedUser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.services.RegistrationCatalog;

@@ -1,6 +1,5 @@
-package com.dto;
+package com.documents;
 
-import com.documents.MeetingPeriods;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.time.LocalDateTime;
@@ -81,5 +80,18 @@ public class ClassDetails {
 
     public void setClassName(String className) {
         this.className = className;
+    }
+
+
+    @Override
+    public String toString() {
+        return "ClassDetails{" +
+                "className='" + className + '\'' +
+                ", classSize=" + classSize +
+                ", open=" + open +
+                ", registrationTime=" + registrationTime +
+                ", registrationClosedTime=" + registrationClosedTime +
+                ", meetingPeriod=" + meetingPeriod +
+                '}';
     }
 }

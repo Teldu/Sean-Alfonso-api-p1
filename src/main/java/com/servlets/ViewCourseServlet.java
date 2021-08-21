@@ -1,12 +1,8 @@
 package com.servlets;
 
-import com.documents.AppUser;
-import com.documents.Authorization;
-import com.dto.ClassDetails;
+import com.documents.ClassDetails;
 import com.dto.Principal;
-import com.dto.SheildedUser;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.services.RegistrationCatalog;
 import com.services.UserService;
 import com.util.exceptions.InvalidRequestException;
@@ -18,7 +14,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.swing.text.View;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
