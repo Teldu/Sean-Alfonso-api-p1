@@ -11,10 +11,12 @@ import com.util.exceptions.ResourcePersistenceException;
 public class UserService {
 
     private final UserRepository userRepo;
+    private final RegistrationCatalog registrationCatalog;
 
+    public UserService(UserRepository userRepo , RegistrationCatalog registrationCatalog) {
 
-    public UserService(UserRepository userRepo) {
         this.userRepo = userRepo;
+        this.registrationCatalog = registrationCatalog;
     }
 
 
@@ -80,9 +82,10 @@ public class UserService {
 
     }
 
-    public void DropClass(String courseName , String dropedStudent)
+    public void DropClass(String courseName , String dropedStudent , String password)
     {
-
+       userRepo.RemoveUserFromClass(dropedStudent , password , courseName);
+       registrationCatalog.RemoveStudentFromCourse(courseName, dropedStudent);
     }
     public boolean isUserValid(AppUser user) {
         if (user == null) return false;

@@ -36,22 +36,22 @@ public class AddCourseServlet extends HttpServlet {
     }
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setContentType("application/json");
-        HttpSession session = req.getSession(false);
-        SheildedUser sheildedUser = (session == null) ? null : (SheildedUser) session.getAttribute("auth-user");
-        if(sheildedUser == null)
-        {
-            //resp.sendRedirect("/auth");
-            resp.setStatus(401);
-            return;
-        }
-        if(sheildedUser.getAuthorization() !=  Authorization.ADMIN)
-        {
-            //resp.sendRedirect("/auth");
-            resp.setStatus(403);
-            System.out.println("Unauthorized Command");
-            return;
-        }
+//        resp.setContentType("application/json");
+//        HttpSession session = req.getSession(false);
+//        SheildedUser sheildedUser = (session == null) ? null : (SheildedUser) session.getAttribute("auth-user");
+//        if(sheildedUser == null)
+//        {
+//            //resp.sendRedirect("/auth");
+//            resp.setStatus(401);
+//            return;
+//        }
+//        if(sheildedUser.getAuthorization() !=  Authorization.ADMIN)
+//        {
+//            //resp.sendRedirect("/auth");
+//            resp.setStatus(403);
+//            System.out.println("Unauthorized Command");
+//            return;
+//        }
 
         PrintWriter respWriter = resp.getWriter();
         try{

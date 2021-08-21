@@ -1,7 +1,13 @@
 package com.servlets;
 
+import com.documents.AppUser;
 import com.dto.Principal;
+import com.dto.Request;
 import com.dto.SheildedUser;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.services.UserService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -13,36 +19,41 @@ import java.io.PrintWriter;
 
 public class StudentCourseRegistrationServlet extends HttpServlet {
 
+    private final UserService userService;
+    private final ObjectMapper mapper;
+
+
+    public StudentCourseRegistrationServlet(UserService userService , ObjectMapper mapper) {
+        this.mapper = mapper;
+        this.userService = userService;
+
+    }
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        HttpSession session = req.getSession(false);
-        Principal principal = (session == null) ? null : (Principal) session.getAttribute("auth-user");
-        if(principal == null)
+
+    }
+
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+//        HttpSession session = req.getSession(false);
+//        AppUser appUser = (session == null) ? null : (AppUser) session.getAttribute("auth-user");
+        resp.setContentType("application/json"); // TODO fix mapping issue
+        Request request = mapper.readValue(req.getInputStream() , Request.class);
+        if(request == null)
         {
             resp.setStatus(401);
             return;
         }
 
-        String userParam = req.getParameter("id");
+
         PrintWriter respWriter = resp.getWriter();
         try{
-            if(userParam == null)
-            {
-                //  List<AppUser> users = userService.findAll();TODO implement find all method in user service
-                //respWriter.write(mapper.writeValueAsString(users));
-            }else   {
-                //SheildedUser appUser = userService.FindUserById(userParam); // TODO implement find user by id method in user service
-                //respWriter.write(mapper.writeValueAsString(appUser));
-            }
+
+            userService.DropClass( request.getName() , request.getRequesterName() , request.getRequesterCredentials());
 
         }catch(Exception e)
         {
 
         }
-
-    }
-
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
 
     }

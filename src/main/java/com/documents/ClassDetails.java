@@ -102,7 +102,6 @@ public class ClassDetails {
         this.className = className;
     }
 
-
     @Override
     public String toString() {
         return "ClassDetails{" +
@@ -112,6 +111,7 @@ public class ClassDetails {
                 ", registrationTime=" + registrationTime +
                 ", registrationClosedTime=" + registrationClosedTime +
                 ", meetingPeriod=" + meetingPeriod +
+                ", studentsRegistered=" + studentsRegistered +
                 '}';
     }
 }
