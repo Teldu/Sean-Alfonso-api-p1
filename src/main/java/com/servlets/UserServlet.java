@@ -34,16 +34,18 @@ public class UserServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
+        PrintWriter respWriter = resp.getWriter();
         HttpSession session = req.getSession(false);
         Principal principal = (session == null) ? null : (Principal) session.getAttribute("auth-user");
         if(principal == null)
         {
-            resp.setStatus(401);
+            respWriter.write("<h1>'potatoes'</h1>");
+            //resp.setStatus(401);
             return;
         }
 
         String userParam = req.getParameter("id");
-        PrintWriter respWriter = resp.getWriter();
+
         try{
             if(userParam == null)
             {
