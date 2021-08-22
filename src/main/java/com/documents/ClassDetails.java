@@ -1,5 +1,6 @@
 package com.documents;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.time.LocalDateTime;
@@ -14,11 +15,12 @@ public class ClassDetails {
     private boolean open = false;
     private LocalDateTime registrationTime;
     private LocalDateTime registrationClosedTime;
-    private MeetingPeriods meetingPeriod = MeetingPeriods.MWF;
-    private List<String> studentsRegistered = new ArrayList<>();
+
+    private String meetingPeriod = "MWF";
+    private List<String> studentsRegistered = new ArrayList<String>();
 
 
-    public ClassDetails() { }
+    public ClassDetails() {super(); }
 
     public ClassDetails(boolean open , LocalDateTime registrationTime )
     {
@@ -26,12 +28,12 @@ public class ClassDetails {
         this.registrationTime = registrationTime;
     }
 
-    public ClassDetails(int classSize, boolean open, LocalDateTime registrationTime, MeetingPeriods meetingPeriod) {
+    public ClassDetails(int classSize, boolean open, LocalDateTime registrationTime, String meetingPeriod) {
         new ClassDetails(open , registrationTime);
         this.classSize = classSize;
         this.meetingPeriod = meetingPeriod;
     }
-    public ClassDetails(String className , int classSize, boolean open, LocalDateTime registrationTime, MeetingPeriods meetingPeriod) {
+    public ClassDetails(String className , int classSize, boolean open, LocalDateTime registrationTime, String meetingPeriod) {
         new ClassDetails(open , registrationTime);
         this.classSize = classSize;
         this.meetingPeriod = meetingPeriod;
@@ -86,11 +88,11 @@ public class ClassDetails {
         this.registrationClosedTime = registrationClosedTime;
     }
 
-    public MeetingPeriods getMeetingPeriod() {
+    public String getMeetingPeriod() {
         return meetingPeriod;
     }
 
-    public void setMeetingPeriod(MeetingPeriods meetingPeriod) {
+    public void setMeetingPeriod(String meetingPeriod) {
         this.meetingPeriod = meetingPeriod;
     }
 
@@ -100,6 +102,10 @@ public class ClassDetails {
 
     public void setClassName(String className) {
         this.className = className;
+    }
+
+    public List<String> getStudentsRegistered() {
+        return studentsRegistered;
     }
 
     @Override

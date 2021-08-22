@@ -1,7 +1,9 @@
 package com.services;
+import com.datasourse.repos.CrudRepository;
 import com.documents.AppUser;
 import com.documents.MeetingPeriods;
 import com.documents.ClassDetails;
+import com.dto.Classdto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.client.*;
@@ -27,7 +29,7 @@ import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
 
-public class RegistrationCatalog {
+public class RegistrationCatalog implements CrudRepository<Classdto> {
 
    // private final Logger logger = LogManager.getLogger(StudentDashboard.class);
     private String className;
@@ -35,6 +37,7 @@ public class RegistrationCatalog {
     private List<String> students;
     private ObjectMapper mapper = new ObjectMapper();
     String DatabaseName = "SchoolDatabase";
+    String CourseCollectionName = "Courses";
     CodecProvider pojoCodecProvider = PojoCodecProvider.builder().automatic(true).build();
     CodecRegistry pojoCodecRegistry = fromRegistries(getDefaultCodecRegistry(), fromProviders(pojoCodecProvider));
     public RegistrationCatalog(String className, int classSize){
@@ -55,33 +58,52 @@ public class RegistrationCatalog {
     }
 
 
+    @Override
+    public Classdto findById(String id) {
+        return null;
+    }
 
+    @Override
+    public Classdto save(Classdto newResource) {
+        return null;
+    }
 
-    public ClassDetails save(ClassDetails classDetails) {
+    public Classdto save(ClassDetails classDetails) {
+
         try {
             MongoClient mongoClient = MongoClientFactory.getInstance().getConnection(); //connect to mongoDB
 
+
             MongoDatabase classDb = mongoClient.getDatabase(DatabaseName);
-            //sets db to classes. all class names and student rosters exist here
+                 MongoCollection<Document> usersCollection  = classDb.getCollection(CourseCollectionName);
+                Document newCDoc = new Document("classSize", classDetails.getClassSize())
+                                                .append("className", classDetails.getClassName())
+                                                .append("open", classDetails.isOpen())
+                                                .append("registrationTime" , classDetails.getRegistrationTime())
+                                                .append("registrationClosedTime" , classDetails.getRegistrationClosedTime())
+                                                .append("meetingPeriod" , classDetails.getMeetingPeriod())
+                                                .append("studentsRegistered" , classDetails.getStudentsRegistered());
 
-                //inserting a new class detail pojo in order to proceed class data not related too students
-                MongoCollection<Document> usersCollection = classDb.getCollection("Courses");
-                String classDetailAsString = mapper.writeValueAsString(classDetails);
-                Document newClassDetailDoc = Document.parse(classDetailAsString);
 
+                    usersCollection.insertOne(newCDoc);
+                    return new Classdto(classDetails);
 
-                if(newClassDetailDoc == null )
-                {
-                    return null;
-                }else{
-                    usersCollection.insertOne(newClassDetailDoc);
-                    return classDetails;
-                }
         } catch (Exception e) {
            // logger.error(e.getMessage());
+            e.printStackTrace();
             throw new DataSourceException("An unexpected exception occurred.", e);
         }
 
+    }
+
+    @Override
+    public boolean update(Classdto updatedResource) {
+        return false;
+    }
+
+    @Override
+    public boolean deleteById(int id) {
+        return false;
     }
 
     public boolean UpdateFull(ClassDetails classDetails)
@@ -275,7 +297,7 @@ public class RegistrationCatalog {
         }
     }
 
-    public List<ClassDetails> showClasses() {
+    public List<ClassDetails> showClasses() { // TODO reWork this to work with ducements instead of collections
        List<ClassDetails> classDetailsList = new ArrayList<>();
         try {
             MongoClient mongoClient = MongoClientFactory.getInstance().getConnection();
@@ -294,7 +316,7 @@ public class RegistrationCatalog {
                 Object registrationTime = classDoc.get("registrationTime");
                 Object meetingPeriod = classDoc.get("meetingPeriod");
                 // create pojo
-                ClassDetails classDetails = new ClassDetails((String) classname  , (int)classSize, (boolean)classStatus ,(LocalDateTime) registrationTime , (MeetingPeriods)meetingPeriod);
+                ClassDetails classDetails = new ClassDetails((String) classname  , (int)classSize, (boolean)classStatus ,(LocalDateTime) registrationTime , (String) meetingPeriod);
                 if(classDetails == null)
                 {
                     throw new InvalidRequestException("element list cannot be created : null");

@@ -2,7 +2,9 @@ package com.servlets;
 
 import com.documents.Authorization;
 import com.documents.ClassDetails;
+import com.dto.Classdto;
 import com.dto.SheildedUser;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.services.RegistrationCatalog;
 import com.services.UserService;
@@ -53,19 +55,30 @@ public class AddCourseServlet extends HttpServlet {
 //            return;
 //        }
 
-        PrintWriter respWriter = resp.getWriter();
+
         try{
+            PrintWriter respWriter = resp.getWriter();
             ClassDetails classDetails = mapper.readValue(req.getInputStream() , ClassDetails.class);
             respWriter.write("<h1>" + classDetails.toString() + "</h1>");
             if(classDetails != null) {
-             ClassDetails classD =  registrationCatalog.save(classDetails);
+             Classdto classD =  registrationCatalog.save(classDetails);
              String classInfo = mapper.writeValueAsString(classD);
                 respWriter.write("<h1>" + classInfo + "</h1>");
             }
+        }catch (JsonProcessingException jpe)
+        {
+            resp.sendError(500 , "Failure Mapping classinfo to String");
+            return;
+        }
+        catch(IOException ioe)
+        {
+            resp.sendError(500 , "Failure Reading  File");
+            return;
         }
         catch(Exception e)
         {
-            resp.sendError(500 , "action cannot be completed");
+                e.printStackTrace();
+            resp.sendError(500 , "e.getMessage()");
             return;
         }
 

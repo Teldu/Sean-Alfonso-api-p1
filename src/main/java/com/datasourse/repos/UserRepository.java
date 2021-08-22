@@ -117,11 +117,10 @@ public class UserRepository implements CrudRepository<AppUser> {
     /**
      * Should update users courses
      * make isAdding false to drop a course
-     * @param name
      * @param password
      * @param className
      */
-    public void AddUserToClass(String name , String password , String className )
+    public void AddUserToClass( String password , String className )
     {
 
         try {
@@ -129,7 +128,7 @@ public class UserRepository implements CrudRepository<AppUser> {
 
             MongoDatabase registrationdb = mongoClient.getDatabase(DatabaseName);
             MongoCollection<Document> UserCollection = registrationdb.getCollection(StudentCollectionName);
-            Document queryDoc = new Document("Username", name).append("password", password);
+            Document queryDoc = new Document("password", password);
             Document AuthDoc = UserCollection.find(queryDoc).first();
             System.out.println(AuthDoc);
             if(AuthDoc == null)

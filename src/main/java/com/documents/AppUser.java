@@ -67,20 +67,24 @@ public class AppUser {
         this.registeredClasses = registeredClasses;
     }
 
-    public void AddCourseToList(String courseName)
+    public boolean AddCourseToList(String courseName)
     {
-        if(!registeredClasses.contains(courseName))
+        if(!registeredClasses.contains(courseName) )
         {
             registeredClasses.add(courseName);
+            return true;
         }
+        return false;
     }
 
-    public void RemoveCourseFromList(String courseName)
+    public boolean RemoveCourseFromList(String courseName)
     {
-        if(registeredClasses.contains(courseName))
+        if(registeredClasses.contains(courseName)  && registeredClasses.size() > 0)
         {
             registeredClasses.remove(courseName);
+            return true;
         }
+        return false;
     }
 
     public String getId() {

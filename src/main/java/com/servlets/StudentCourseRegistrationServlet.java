@@ -34,9 +34,10 @@ public class StudentCourseRegistrationServlet extends HttpServlet {
     }
 
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-//        HttpSession session = req.getSession(false);
-//        AppUser appUser = (session == null) ? null : (AppUser) session.getAttribute("auth-user");
         resp.setContentType("application/json"); // TODO fix mapping issue
+        HttpSession session = req.getSession(false);
+        AppUser appUser = (session == null) ? null : (AppUser) session.getAttribute("auth-user");
+
         Request request = mapper.readValue(req.getInputStream() , Request.class);
         if(request == null)
         {
@@ -47,8 +48,10 @@ public class StudentCourseRegistrationServlet extends HttpServlet {
 
         PrintWriter respWriter = resp.getWriter();
         try{
-
-            userService.DropClass( request.getName() , request.getRequesterName() , request.getRequesterCredentials());
+            if(request.getRequest().equals("Drop"))
+            userService.DropClass( request.getName() , appUser.getFirstName() , appUser.getPassword());
+            else
+                userService.AddClass( request.getName() , appUser.getFirstName() , appUser.getPassword() );
 
         }catch(Exception e)
         {

@@ -8,6 +8,8 @@ import com.util.exceptions.AuthenticationException;
 import com.util.exceptions.InvalidRequestException;
 import com.util.exceptions.ResourcePersistenceException;
 
+import java.util.zip.DataFormatException;
+
 public class UserService {
 
     private final UserRepository userRepo;
@@ -77,13 +79,20 @@ public class UserService {
 
     }
 
-    public void AddClass(String courseName , String addedStudent)
-    {
-
+    public void AddClass(String courseName , String addedStudent, String password) throws DataFormatException {
+        if(courseName == null || addedStudent == null || password == null)
+        {
+            throw new DataFormatException("Provided Information is Invalid");
+        }
+        userRepo.AddUserToClass(password , courseName);
+        registrationCatalog.AddStudentToCourse(courseName, addedStudent);
     }
 
-    public void DropClass(String courseName , String dropedStudent , String password)
-    {
+    public void DropClass(String courseName , String dropedStudent , String password) throws DataFormatException {
+        if(courseName == null || dropedStudent == null || password == null)
+        {
+            throw new DataFormatException("Provided Information is Invalid");
+        }
        userRepo.RemoveUserFromClass(dropedStudent , password , courseName);
        registrationCatalog.RemoveStudentFromCourse(courseName, dropedStudent);
     }

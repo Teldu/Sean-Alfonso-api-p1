@@ -16,12 +16,14 @@ public class UserServiceTestSuite {
 
 
     private UserRepository mockUserRepo;
+    private RegistrationCatalog mockClassRepo;
 
     @Before
     public void beforeEachTest() {
 
         mockUserRepo = mock(UserRepository.class);
-        sut = new UserService(mockUserRepo);
+        mockClassRepo = mock(RegistrationCatalog.class);
+        sut = new UserService(mockUserRepo , mockClassRepo) ;
     }
 
     @After

@@ -1,15 +1,21 @@
 package com.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Request {
     String name;
-    String requesterName;
+    String request;
     String requesterCredentials;
 
+
+    public Request(){}
     public Request(String name, String requesterName, String requesterCredentials) {
         this.name = name;
-        this.requesterName = requesterName;
+        this.request = requesterName;
         this.requesterCredentials = requesterCredentials;
     }
+
 
     public String getName() {
         return name;
@@ -19,12 +25,12 @@ public class Request {
         this.name = name;
     }
 
-    public String getRequesterName() {
-        return requesterName;
+    public String getRequest() {
+        return request;
     }
 
-    public void setRequesterName(String requesterName) {
-        this.requesterName = requesterName;
+    public void setRequest(String request) {
+        this.request = request;
     }
 
     public String getRequesterCredentials() {
