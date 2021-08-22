@@ -39,7 +39,7 @@ public class UserServlet extends HttpServlet {
         Principal principal = (session == null) ? null : (Principal) session.getAttribute("auth-user");
         if(principal == null)
         {
-            respWriter.write("<h1>'potatoes'</h1>");
+            respWriter.write("<h1></h1>");
             //resp.setStatus(401);
             return;
         }
