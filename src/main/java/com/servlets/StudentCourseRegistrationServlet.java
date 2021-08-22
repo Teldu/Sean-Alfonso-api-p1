@@ -1,11 +1,14 @@
 package com.servlets;
 
 import com.documents.AppUser;
+import com.dto.Credentials;
 import com.dto.Principal;
 import com.dto.Request;
 import com.dto.SheildedUser;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.services.UserService;
+import com.util.exceptions.DataSourceException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -34,28 +37,63 @@ public class StudentCourseRegistrationServlet extends HttpServlet {
     }
 
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setContentType("application/json"); // TODO fix mapping issue
+        resp.setContentType("application/json");
         HttpSession session = req.getSession(false);
-        AppUser appUser = (session == null) ? null : (AppUser) session.getAttribute("auth-user");
-
-        Request request = mapper.readValue(req.getInputStream() , Request.class);
-        if(request == null)
+        if(session == null)
         {
-            resp.setStatus(401);
+            resp.sendError(400 , "session expired");
             return;
         }
+        AppUser appUser  = (session == null) ? null : (AppUser) session.getAttribute("auth-user");
 
 
-        PrintWriter respWriter = resp.getWriter();
-        try{
-            if(request.getRequest().equals("Drop"))
-            userService.DropClass( request.getName() , appUser.getFirstName() , appUser.getPassword());
+
+
+        try {
+            PrintWriter respWriter = resp.getWriter();
+            Request request = mapper.readValue(req.getInputStream() , Request.class);
+            respWriter.write(request.getRequest());
+            System.out.println( request.getRequest() + " : Regestration Servlet");
+
+            if(request == null)
+            {
+                resp.setStatus(400);
+                return;
+            }
+
+            if( appUser == null)
+            {
+                resp.setStatus(500);
+                return;
+            }
+
+
+
+            if (request.getRequest().equals("Drop"))
+            {
+                userService.DropClass(request.getName(), appUser.getFirstName(), appUser.getUsername());
+            respWriter.write("Succesfully Droped " + request.getRequest());
+             }
             else
-                userService.AddClass( request.getName() , appUser.getFirstName() , appUser.getPassword() );
+            {
+                userService.AddClass( request.getName() , appUser.getFirstName(), appUser.getUsername());
+                respWriter.write("Succesfully Added " + request.getRequest());
+            }
 
+
+        }catch(DataSourceException e)
+        {
+            resp.sendError(400 , "file data ");
+        } catch(JsonProcessingException e)
+        {
+            resp.sendError(500 , "Error on Json");
+        }catch(IOException e)
+        {
+            resp.sendError(500 , "Error on File reader");
         }catch(Exception e)
         {
-
+            e.printStackTrace();
+            resp.sendError(500 , "Error on Programmer");
         }
 
 

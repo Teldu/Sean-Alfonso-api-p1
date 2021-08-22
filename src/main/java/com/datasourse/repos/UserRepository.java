@@ -18,6 +18,7 @@ public class UserRepository implements CrudRepository<AppUser> {
     String DatabaseName = "SchoolDatabase";
     String StudentCollectionName = "Students";
     String AdminCollectionName = "Admin";
+
     public UserRepository(MongoClient mongoClient){ this.mongoClient = mongoClient;}
 
     public AppUser findUserByCredentials(String username, String password, String type) {
@@ -85,25 +86,27 @@ public class UserRepository implements CrudRepository<AppUser> {
         return null;
     }
 
-    public void RemoveUserFromClass(String name , String password , String className)
+    public void RemoveUserFromClass(String username, String className)
     {
         try {
             MongoClient mongoClient = MongoClientFactory.getInstance().getConnection();
 
             MongoDatabase registraiondb = mongoClient.getDatabase(DatabaseName);
             MongoCollection<Document> UserCollection = registraiondb.getCollection(StudentCollectionName);
-            Document queryDoc = new Document("Username", name).append("password", password);
+            // find the user
+            Document queryDoc = new Document("username", username);
             Document AuthDoc = UserCollection.find(queryDoc).first();
+
+            // check is user is null
             System.out.println(AuthDoc);
             if(AuthDoc == null)
             {
+                System.out.println("Failed to add course");
                 return;
             }
 
-            ObjectMapper mapper = new ObjectMapper();
-            AppUser AuthorizedUser = mapper.readValue(AuthDoc.toJson() , AppUser.class);
-            AuthorizedUser.RemoveCourseFromList(className);
 
+            // remove class from students schedual
             UserCollection.findOneAndUpdate(queryDoc , new Document("$pull" , new Document("registeredClasses" , className)) );
 
         }
@@ -117,10 +120,10 @@ public class UserRepository implements CrudRepository<AppUser> {
     /**
      * Should update users courses
      * make isAdding false to drop a course
-     * @param password
+     * @param id
      * @param className
      */
-    public void AddUserToClass( String password , String className )
+    public void AddUserToClass( String username , String className )
     {
 
         try {
@@ -128,19 +131,17 @@ public class UserRepository implements CrudRepository<AppUser> {
 
             MongoDatabase registrationdb = mongoClient.getDatabase(DatabaseName);
             MongoCollection<Document> UserCollection = registrationdb.getCollection(StudentCollectionName);
-            Document queryDoc = new Document("password", password);
+            Document queryDoc = new Document("username", username);
             Document AuthDoc = UserCollection.find(queryDoc).first();
             System.out.println(AuthDoc);
             if(AuthDoc == null)
             {
+                System.out.println("Failed to add course");
                 return;
             }
 
-            ObjectMapper mapper = new ObjectMapper();
-            AppUser AuthorizedUser = mapper.readValue(AuthDoc.toJson() , AppUser.class);
-            AuthorizedUser.AddCourseToList(className);
 
-
+            // add course to student scedual
             UserCollection.findOneAndUpdate(queryDoc , new Document("$push" , new Document("registeredClasses" , className)));
 
         }

@@ -19,7 +19,7 @@ public class AppUser {
     private String username;
     private String password;
     private Address address;
-    private Authorization authorization = Authorization.NONE;
+    private Authorization authorization;
     private LocalDateTime registrationTime;
     private List<String> registeredClasses = new ArrayList<String>();
 

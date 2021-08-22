@@ -18,7 +18,7 @@ public class Principal {
     {
        this.username =  appUser.getUsername();
        this.id = appUser.getId();
-       this.type = appUser.getAuthorization() == Authorization.STUDENT ? "STUDENT" : "ADMINISTRATOR";
+       this.type = appUser.getAuthorization() == Authorization.STUDENT ? "STUDENT" :appUser.getAuthorization() == Authorization.NONE ? "NONE": "ADMINISTRATOR";
     }
 
     public String getUsername() {

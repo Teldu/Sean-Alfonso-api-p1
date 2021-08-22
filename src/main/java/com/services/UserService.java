@@ -79,21 +79,21 @@ public class UserService {
 
     }
 
-    public void AddClass(String courseName , String addedStudent, String password) throws DataFormatException {
-        if(courseName == null || addedStudent == null || password == null)
+    public void AddClass(String courseName , String addedStudent, String username) throws DataFormatException {
+        if(courseName == null || addedStudent == null || username == null)
         {
             throw new DataFormatException("Provided Information is Invalid");
         }
-        userRepo.AddUserToClass(password , courseName);
+        userRepo.AddUserToClass(username , courseName);
         registrationCatalog.AddStudentToCourse(courseName, addedStudent);
     }
 
-    public void DropClass(String courseName , String dropedStudent , String password) throws DataFormatException {
-        if(courseName == null || dropedStudent == null || password == null)
+    public void DropClass(String courseName , String dropedStudent , String username) throws DataFormatException {
+        if(courseName == null || dropedStudent == null || username == null)
         {
             throw new DataFormatException("Provided Information is Invalid");
         }
-       userRepo.RemoveUserFromClass(dropedStudent , password , courseName);
+       userRepo.RemoveUserFromClass(username , courseName);
        registrationCatalog.RemoveStudentFromCourse(courseName, dropedStudent);
     }
     public boolean isUserValid(AppUser user) {

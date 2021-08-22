@@ -184,7 +184,7 @@ public class RegistrationCatalog implements CrudRepository<Classdto> {
                 throw new RuntimeException(msg);
             }
 
-            targetCourse.RemoveStudentFromList(addedStudent);
+            targetCourse.AddStudentToList(addedStudent);
 
             courseCollection.findOneAndUpdate(queryDoc, new Document("$push", new Document("studentsRegistered", addedStudent)));
 
