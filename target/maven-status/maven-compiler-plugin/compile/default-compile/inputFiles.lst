@@ -2,9 +2,11 @@ C:\Users\Alfonso Holmes\Revature Bank\Sean-Alfonso-api-p1\src\main\java\com\dto\
 C:\Users\Alfonso Holmes\Revature Bank\Sean-Alfonso-api-p1\src\main\java\com\servlets\AuthServlet.java
 C:\Users\Alfonso Holmes\Revature Bank\Sean-Alfonso-api-p1\src\main\java\com\util\MongoClientFactory.java
 C:\Users\Alfonso Holmes\Revature Bank\Sean-Alfonso-api-p1\src\main\java\com\util\exceptions\DataSourceException.java
+C:\Users\Alfonso Holmes\Revature Bank\Sean-Alfonso-api-p1\src\main\java\com\servlets\showCoursesServlet.java
 C:\Users\Alfonso Holmes\Revature Bank\Sean-Alfonso-api-p1\src\main\java\com\documents\ClassDetails.java
 C:\Users\Alfonso Holmes\Revature Bank\Sean-Alfonso-api-p1\src\main\java\com\services\RegistrationCatalog.java
 C:\Users\Alfonso Holmes\Revature Bank\Sean-Alfonso-api-p1\src\main\java\com\servlets\StudentCourseRegistrationServlet.java
+C:\Users\Alfonso Holmes\Revature Bank\Sean-Alfonso-api-p1\src\main\java\com\servlets\ViewStudentCourseServlet.java
 C:\Users\Alfonso Holmes\Revature Bank\Sean-Alfonso-api-p1\src\main\java\com\datasourse\repos\CrudRepository.java
 C:\Users\Alfonso Holmes\Revature Bank\Sean-Alfonso-api-p1\src\main\java\com\services\UserService.java
 C:\Users\Alfonso Holmes\Revature Bank\Sean-Alfonso-api-p1\src\main\java\com\util\exceptions\ResourcePersistenceException.java

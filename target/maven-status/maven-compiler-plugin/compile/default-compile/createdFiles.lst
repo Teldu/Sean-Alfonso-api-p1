@@ -1,6 +1,7 @@
 com\servlets\StudentCourseRegistrationServlet.class
 com\documents\ClassDetails.class
 com\servlets\AddCourseServlet.class
+com\servlets\showCoursesServlet.class
 com\dto\Request.class
 com\servlets\ViewStudentCourseServlet.class
 com\servlets\ViewCourseServlet.class
