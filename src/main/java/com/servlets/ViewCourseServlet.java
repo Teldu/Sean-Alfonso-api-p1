@@ -47,13 +47,14 @@ public class ViewCourseServlet  extends HttpServlet {
         String courseName = req.getParameter("coursename");
         if(appUser == null)
         {
+            System.out.println("App user is null");
             resp.setStatus(401);
             return;
         }
 
 
         try{
-            if(courseName == null || courseName.isEmpty())
+            if(courseName == null || courseName.isEmpty())//TODO Students shoudn't see all registered students : Admin Can see the all Registered Students
             {
                List<ClassDetails> allClassDetails = registrationCatalog.showClasses();
                 System.out.println(allClassDetails);

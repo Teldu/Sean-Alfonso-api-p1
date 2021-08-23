@@ -298,34 +298,41 @@ public class RegistrationCatalog implements CrudRepository<Classdto> {
     }
 
     public List<ClassDetails> showClasses() { // TODO reWork this to work with ducements instead of collections
-       List<ClassDetails> classDetailsList = new ArrayList<>();
+        // list to store mapped Classes
+        List<ClassDetails> outClassList = new ArrayList<>();
+        // list to store class documents
+       List<Document> classDetailsList = new ArrayList<>();
         try {
             MongoClient mongoClient = MongoClientFactory.getInstance().getConnection();
 
             MongoDatabase classDb = mongoClient.getDatabase(DatabaseName);
-
-            MongoIterable<Document> list = classDb.listCollections();
+            MongoCollection<Document> courseCollection = classDb.getCollection("Courses");
+            List<Document> listOfDocs = courseCollection.find().into(classDetailsList);
 
             ObjectMapper mapper = new ObjectMapper();
             //iterate through all collections in class DB and convert the documents to class detail pojos
-            for (Document classDoc : list) {
+            for (Document classDoc : listOfDocs) {
                 // grab all relavant data to ClassDetail pojo
                 Object classSize = classDoc.get("classSize");
+                System.out.println(classSize);
                 Object classname = classDoc.get("className");
                 Object classStatus = classDoc.get("open");
                 Object registrationTime = classDoc.get("registrationTime");
                 Object meetingPeriod = classDoc.get("meetingPeriod");
+                Object studentsRegistered = classDoc.get("studentsRegistered");
                 // create pojo
                 ClassDetails classDetails = new ClassDetails((String) classname  , (int)classSize, (boolean)classStatus ,(LocalDateTime) registrationTime , (String) meetingPeriod);
+                classDetails.setStudentsRegistered((List<String>) studentsRegistered);
+
                 if(classDetails == null)
                 {
                     throw new InvalidRequestException("element list cannot be created : null");
                 }
                 // add pojo to list to then forward to servlet
-                classDetailsList.add(classDetails);
+                 outClassList.add(classDetails);
             }
 
-            return classDetailsList;
+            return outClassList;
 
         } catch (Exception e) {
             //logger.error(e.getMessage());

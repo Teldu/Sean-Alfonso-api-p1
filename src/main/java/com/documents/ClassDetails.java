@@ -56,6 +56,10 @@ public class ClassDetails {
         }
     }
 
+    public void setStudentsRegistered(List<String> studentsRegistered) {
+        this.studentsRegistered = studentsRegistered;
+    }
+
     public int getClassSize() {
         return classSize;
     }
