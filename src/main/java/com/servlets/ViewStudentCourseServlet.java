@@ -1,10 +1,12 @@
 package com.servlets;
 
+import com.documents.AppUser;
 import com.documents.ClassDetails;
+import com.dto.Credentials;
 import com.dto.Principal;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.services.RegistrationCatalog;
 import com.services.UserService;
+import com.util.exceptions.AuthenticationException;
 import com.util.exceptions.InvalidRequestException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,26 +20,24 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
-public class ViewCourseServlet  extends HttpServlet {
-    private final RegistrationCatalog registrationCatalog;
+public class ViewStudentCourseServlet extends HttpServlet {
     private final UserService userService;
     private final ObjectMapper mapper;
     private final Logger logger = LogManager.getLogger(this.getClass());
 
-    public ViewCourseServlet(RegistrationCatalog registrationCatalog , UserService userService , ObjectMapper objectMapper)
-    {
-        this.mapper = objectMapper;
+    public ViewStudentCourseServlet(UserService userService , ObjectMapper mapper) {
+        this.mapper = mapper;
         this.userService = userService;
-        this.registrationCatalog = registrationCatalog;
+
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("application/json");
         HttpSession session = req.getSession(false);
-        Principal principal = (session == null) ? null : (Principal) session.getAttribute("auth-user");
+        AppUser appUser = (session == null) ? null : (AppUser) session.getAttribute("auth-user");
         String courseName = req.getParameter("coursename");
-        if(principal == null)
+        if(appUser == null)
         {
             resp.setStatus(401);
             return;
@@ -47,13 +47,12 @@ public class ViewCourseServlet  extends HttpServlet {
 
         PrintWriter respWriter = resp.getWriter();
         try{
-            if(courseName == null)
+            if(courseName == null || courseName.isEmpty())
             {
-               List<ClassDetails> allClassDetails = registrationCatalog.showClasses();
-                respWriter.write(mapper.writeValueAsString(allClassDetails));
+               respWriter.write(mapper.writeValueAsString(appUser.getRegisteredClasses()));
             }else   {
-                ClassDetails classDetails = registrationCatalog.GetClassDetailsOf(courseName);
-                respWriter.write(mapper.writeValueAsString(classDetails));
+               // ClassDetails classDetails = registrationCatalog.GetClassDetailsOf(courseName);
+              //  respWriter.write(mapper.writeValueAsString(classDetails));
             }
 
         }   catch(InvalidRequestException e)
@@ -64,11 +63,8 @@ public class ViewCourseServlet  extends HttpServlet {
         }
         catch(Exception e)
         {
-            resp.sendError(500 , "action cannot be completed");
+            resp.sendError(500 , "action cannot be completed on behaf of developer");
             return;
         }
     }
-
-
-
 }

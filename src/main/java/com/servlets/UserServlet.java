@@ -71,6 +71,7 @@ public class UserServlet extends HttpServlet {
             appUser.setAuthorization(Authorization.STUDENT);
             Principal principal = new Principal(userService.register(appUser));
 
+
             String userInfo = mapper.writeValueAsString(principal);
 
             respWriter.write(userInfo);

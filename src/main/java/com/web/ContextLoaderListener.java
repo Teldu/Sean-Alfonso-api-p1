@@ -33,6 +33,7 @@ public class ContextLoaderListener implements ServletContextListener {
             AddCourseServlet addCourseServlet = new AddCourseServlet( registrationCatalog,userService , mapper);
             ViewCourseServlet viewCourseServlet = new ViewCourseServlet(registrationCatalog,userService , mapper);
             StudentCourseRegistrationServlet studentCourseRegistrationServlet = new StudentCourseRegistrationServlet(userService , mapper);
+            ViewStudentCourseServlet viewStudentCourseServlet = new ViewStudentCourseServlet(userService , mapper);
 
             ServletContext context =  sce.getServletContext();
             context.addFilter("CorsFilter" , Filter);
@@ -40,6 +41,7 @@ public class ContextLoaderListener implements ServletContextListener {
             context.addServlet("CourseAddServlet" , addCourseServlet).addMapping("/users/addCourse");
             context.addServlet("StudentCourseRegistrationServlet" , studentCourseRegistrationServlet).addMapping("/users/registration");
             context.addServlet("CourseViewServlet" , viewCourseServlet).addMapping("/viewCourse");
+            context.addServlet("StudentCourseViewServlet" , viewStudentCourseServlet).addMapping("/viewStudentCourse");
             context.addServlet("AuthServlet" , authServlet).addMapping("/auth");
         }
 
