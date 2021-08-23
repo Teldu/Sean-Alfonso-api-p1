@@ -79,11 +79,18 @@ public class UserService {
 
     }
 
-    public void AddClass(String courseName , String addedStudent, String username) throws DataFormatException {
-        if(courseName == null || addedStudent == null || username == null)
+    public void AddClass(String courseName , String addedStudent, String username) throws DataFormatException , InvalidRequestException{
+
+        if(courseName == null || addedStudent == null || username == null || registrationCatalog.GetClassDetailsOf(courseName) == null)
         {
             throw new DataFormatException("Provided Information is Invalid");
         }
+
+        if(registrationCatalog.GetClassDetailsOf(courseName).isOpen() == false)
+        {
+                throw new InvalidRequestException("Cannot Register for CLOSED Course");
+        }
+
         userRepo.AddUserToClass(username , courseName);
         registrationCatalog.AddStudentToCourse(courseName, addedStudent);
     }
@@ -93,6 +100,7 @@ public class UserService {
         {
             throw new DataFormatException("Provided Information is Invalid");
         }
+
        userRepo.RemoveUserFromClass(username , courseName);
        registrationCatalog.RemoveStudentFromCourse(courseName, dropedStudent);
     }

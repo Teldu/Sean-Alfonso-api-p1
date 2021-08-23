@@ -9,6 +9,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.services.UserService;
 import com.util.exceptions.DataSourceException;
+import com.util.exceptions.InvalidRequestException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -81,6 +82,11 @@ public class StudentCourseRegistrationServlet extends HttpServlet {
             }
 
 
+        }
+        catch(InvalidRequestException e)
+        {
+            resp.getWriter().write("<h1>" + e.getMessage() + "</h1>");
+            resp.setStatus(301);
         }catch(DataSourceException e)
         {
             resp.sendError(400 , "file data ");

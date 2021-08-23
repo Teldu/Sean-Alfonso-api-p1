@@ -396,27 +396,16 @@ public class RegistrationCatalog implements CrudRepository<Classdto> {
 
     public ClassDetails GetClassDetailsOf(String className)
     {
+
         try{
             MongoClient mongoClient = MongoClientFactory.getInstance().getConnection();
-            MongoDatabase classDb = mongoClient.getDatabase(DatabaseName);
+            MongoDatabase registraiondb = mongoClient.getDatabase(DatabaseName).withCodecRegistry(pojoCodecRegistry);
+            MongoCollection<ClassDetails> courseCollection = registraiondb.getCollection("Courses", ClassDetails.class);
+            Document queryDoc = new Document("className", className);
+            ClassDetails targetCourse = courseCollection.find(queryDoc).first();
 
-            Document queryDoc = new Document("className" , className);
-            Document authDoc = classDb.getCollection(className).find(queryDoc).first();
 
-            if(authDoc ==null)
-            {
-                System.out.println("Null could not find doc");
-                return null;
-            }
-
-            ObjectMapper mapper = new ObjectMapper();
-            ClassDetails classDetails = mapper.readValue(authDoc.toJson() , ClassDetails.class);
-            return classDetails;
-
-        }catch (JsonProcessingException jpe)
-        {
-            System.out.println("Mapping Error");
-            jpe.printStackTrace();
+            return targetCourse;
 
         }catch (Exception e)
         {

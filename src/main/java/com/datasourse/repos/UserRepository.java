@@ -1,10 +1,12 @@
 package com.datasourse.repos;
 
+import com.documents.ClassDetails;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.util.MongoClientFactory;
+import com.util.exceptions.InvalidRequestException;
 import org.bson.Document;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
@@ -12,13 +14,21 @@ import com.mongodb.client.MongoDatabase;
 
 import com.documents.AppUser;
 import com.util.exceptions.DataSourceException;
+import org.bson.codecs.configuration.CodecProvider;
+import org.bson.codecs.configuration.CodecRegistry;
+import org.bson.codecs.pojo.PojoCodecProvider;
+
+import static com.mongodb.MongoClientSettings.getDefaultCodecRegistry;
+import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
+import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
 public class UserRepository implements CrudRepository<AppUser> {
     public final MongoClient mongoClient;
     String DatabaseName = "SchoolDatabase";
     String StudentCollectionName = "Students";
     String AdminCollectionName = "Admin";
-
+    CodecProvider pojoCodecProvider = PojoCodecProvider.builder().automatic(true).build();
+    CodecRegistry pojoCodecRegistry = fromRegistries(getDefaultCodecRegistry(), fromProviders(pojoCodecProvider));
     public UserRepository(MongoClient mongoClient){ this.mongoClient = mongoClient;}
 
     public AppUser findUserByCredentials(String username, String password, String type) {
@@ -120,7 +130,6 @@ public class UserRepository implements CrudRepository<AppUser> {
     /**
      * Should update users courses
      * make isAdding false to drop a course
-     * @param id
      * @param className
      */
     public void AddUserToClass( String username , String className )
@@ -132,14 +141,6 @@ public class UserRepository implements CrudRepository<AppUser> {
             MongoDatabase registrationdb = mongoClient.getDatabase(DatabaseName);
             MongoCollection<Document> UserCollection = registrationdb.getCollection(StudentCollectionName);
             Document queryDoc = new Document("username", username);
-            Document AuthDoc = UserCollection.find(queryDoc).first();
-            System.out.println(AuthDoc);
-            if(AuthDoc == null)
-            {
-                System.out.println("Failed to add course");
-                return;
-            }
-
 
             // add course to student scedual
             UserCollection.findOneAndUpdate(queryDoc , new Document("$push" , new Document("registeredClasses" , className)));
