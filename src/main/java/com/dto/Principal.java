@@ -9,7 +9,7 @@ public class Principal {
 
 
     private String username;
-    private String id;
+    private String _id;
     private String type;
 
     public Principal() { }
@@ -17,7 +17,7 @@ public class Principal {
     public Principal(AppUser appUser)
     {
        this.username =  appUser.getUsername();
-       this.id = appUser.getId();
+       this._id = appUser.getId();
        this.type = appUser.getAuthorization() == Authorization.STUDENT ? "STUDENT" :appUser.getAuthorization() == Authorization.NONE ? "NONE": "ADMINISTRATOR";
     }
 
@@ -30,11 +30,11 @@ public class Principal {
     }
 
     public String getId() {
-        return id;
+        return _id;
     }
 
     public void setId(String id) {
-        this.id = id;
+        this._id = id;
     }
 
     public String getType() {

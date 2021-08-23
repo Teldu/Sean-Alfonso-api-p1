@@ -1,5 +1,6 @@
 package com.servlets;
 
+import com.documents.AppUser;
 import com.documents.ClassDetails;
 import com.dto.Principal;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,33 +34,40 @@ public class ViewCourseServlet  extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        PrintWriter respWriter = resp.getWriter();
         resp.setContentType("application/json");
         HttpSession session = req.getSession(false);
-        Principal principal = (session == null) ? null : (Principal) session.getAttribute("auth-user");
+        if(session == null){
+            respWriter.write("Session has expired");
+            System.out.println("Session has expired");
+            return;
+        }
+
+        AppUser appUser = (session == null) ? null : (AppUser) session.getAttribute("auth-user");
         String courseName = req.getParameter("coursename");
-        if(principal == null)
+        if(appUser == null)
         {
             resp.setStatus(401);
             return;
         }
 
 
-
-        PrintWriter respWriter = resp.getWriter();
         try{
-            if(courseName == null)
+            if(courseName == null || courseName.isEmpty())
             {
                List<ClassDetails> allClassDetails = registrationCatalog.showClasses();
+                System.out.println(allClassDetails);
                 respWriter.write(mapper.writeValueAsString(allClassDetails));
             }else   {
                 ClassDetails classDetails = registrationCatalog.GetClassDetailsOf(courseName);
+                System.out.println(classDetails);
                 respWriter.write(mapper.writeValueAsString(classDetails));
             }
 
         }   catch(InvalidRequestException e)
         {
 
-            resp.sendError(500 , "action cannot be completed");
+            resp.sendError(500 , "Invalid Request");
             return;
         }
         catch(Exception e)
