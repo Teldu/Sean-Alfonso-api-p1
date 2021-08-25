@@ -31,7 +31,7 @@ public class UserRepository implements CrudRepository<AppUser> {
     CodecRegistry pojoCodecRegistry = fromRegistries(getDefaultCodecRegistry(), fromProviders(pojoCodecProvider));
     public UserRepository(MongoClient mongoClient){ this.mongoClient = mongoClient;}
 
-    public AppUser findUserByCredentials(String username, String password, String type) {
+    public AppUser findUserByCredentials(String username, String password) {
 
         try {
 
@@ -157,9 +157,8 @@ public class UserRepository implements CrudRepository<AppUser> {
     @Override
     public AppUser save(AppUser newUser) {
 
+
         try {
-
-
             MongoDatabase classDb = mongoClient.getDatabase(DatabaseName);
             MongoCollection<Document> usersCollection = classDb.getCollection(StudentCollectionName);
             Document newUserDoc = new Document("firstName", newUser.getFirstName())
@@ -167,6 +166,7 @@ public class UserRepository implements CrudRepository<AppUser> {
                     .append("email", newUser.getEmail())
                     .append("username", newUser.getUsername())
                     .append("password", newUser.getPassword())
+                    .append("authorization", newUser.getAuthorization().toString())
                     .append("registeredClasses" , newUser.getRegisteredClasses());
 
             usersCollection.insertOne(newUserDoc);

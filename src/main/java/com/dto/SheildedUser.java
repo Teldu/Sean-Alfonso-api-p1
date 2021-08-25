@@ -13,7 +13,7 @@ public class SheildedUser {
     private String lastName;
     private String email;
     private String username;
-    private Authorization authorization = Authorization.NONE;
+    private String type;
     private LocalDateTime registrationTime;
     private List<String> registeredClasses = new ArrayList<String>();
 
@@ -26,7 +26,7 @@ public class SheildedUser {
         this.username = appUser.getUsername();
         this.registrationTime = appUser.getRegistrationTime();
         this.registeredClasses = appUser.getRegisteredClasses();
-        this.authorization = appUser.getAuthorization();
+        this.type = appUser.getAuthorization().toString();
     }
 
     public String getId() {
@@ -69,12 +69,12 @@ public class SheildedUser {
         this.username = username;
     }
 
-    public Authorization getAuthorization() {
-        return authorization;
+    public String getType() {
+        return type;
     }
 
-    public void setAuthorization(Authorization authorization) {
-        this.authorization = authorization;
+    public void setType(String type) {
+        this.type = type;
     }
 
     public LocalDateTime getRegistrationTime() {

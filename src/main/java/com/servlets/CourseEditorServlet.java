@@ -1,5 +1,6 @@
 package com.servlets;
 
+import com.documents.AppUser;
 import com.documents.Authorization;
 import com.documents.ClassDetails;
 import com.dto.SheildedUser;
@@ -33,7 +34,7 @@ public class CourseEditorServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("application/json");
         HttpSession session = req.getSession(false);
-        SheildedUser adminUser = (session == null) ? null : (SheildedUser) session.getAttribute("auth-user");
+        AppUser adminUser = (session == null) ? null : (AppUser) session.getAttribute("auth-user");
 
 
         if(adminUser == null)

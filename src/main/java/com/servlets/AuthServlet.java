@@ -39,15 +39,15 @@ public class AuthServlet extends HttpServlet {
 
         try {
             Credentials credentials = mapper.readValue(req.getInputStream() , Credentials.class);
-            AppUser user = userService.login(credentials.getUserName() , credentials.getPassword() , credentials.getType());
+            AppUser user = userService.login(credentials.getUserName() , credentials.getPassword());
 
             Principal p = new Principal(user);
             String payload = mapper.writeValueAsString(p);
-
             respWriter.write(payload);
 
             HttpSession session = req.getSession();
             session.setAttribute("auth-user", user);
+
 
         } catch (AuthenticationException ae) {
             resp.setStatus(401); // server's fault

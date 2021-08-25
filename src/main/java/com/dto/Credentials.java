@@ -9,7 +9,7 @@ public class Credentials {
     private String lastName;
     private String username;
     private String password;
-    private String type;
+
 
     public String getFirstName() {
         return firstName;
@@ -32,11 +32,10 @@ public class Credentials {
     }
 
     public Credentials(){ }
-    public Credentials(String username ,String password , String type)
+    public Credentials(String username ,String password)
     {
         this.username = username;
         this.password = password;
-        this.type = type;
     }
 
     public String getUserName() {
@@ -57,9 +56,7 @@ public class Credentials {
         this.password = password;
     }
 
-    public String getType() {
-        return type;
-    }
+
 
     public void setType(String type) {
         type = type;

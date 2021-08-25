@@ -1,5 +1,6 @@
 package com.servlets;
 
+import com.documents.AppUser;
 import com.documents.Authorization;
 import com.documents.ClassDetails;
 import com.dto.Classdto;
@@ -19,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
 public class AddCourseServlet extends HttpServlet {
     private final RegistrationCatalog registrationCatalog;
@@ -32,28 +34,70 @@ public class AddCourseServlet extends HttpServlet {
         this.userService = userService;
         this.registrationCatalog = registrationCatalog;
     }
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        PrintWriter respWriter = resp.getWriter();
+        resp.setContentType("application/json");
+        HttpSession session = req.getSession(false);
+        if(session == null){
+            respWriter.write("Session has expired");
+            return;
+        }
 
+        AppUser appUser = (session == null) ? null : (AppUser) session.getAttribute("auth-user");
+        String courseName = req.getParameter("coursename");
+        if(appUser == null)
+        {
+            System.out.println("App user is null");
+            resp.setStatus(401);
+            return;
+        }
+
+
+        try{
+            if(courseName == null || courseName.isEmpty())//TODO Students shoudn't see all registered students : Admin Can see the all Registered Students
+            {
+                List<ClassDetails> allClassDetails = registrationCatalog.showClasses();
+                System.out.println(allClassDetails);
+                respWriter.write(mapper.writeValueAsString(allClassDetails));
+            }else   {
+                ClassDetails classDetails = registrationCatalog.GetClassDetailsOf(courseName);
+                System.out.println(classDetails);
+                respWriter.write(mapper.writeValueAsString(classDetails));
+            }
+
+        }   catch(InvalidRequestException e)
+        {
+
+            resp.sendError(500 , "Invalid Request");
+            return;
+        }
+        catch(Exception e)
+        {
+            resp.sendError(500 , "action cannot be completed");
+            return;
+        }
     }
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-//        resp.setContentType("application/json");
-//        HttpSession session = req.getSession(false);
-//        SheildedUser sheildedUser = (session == null) ? null : (SheildedUser) session.getAttribute("auth-user");
-//        if(sheildedUser == null)
-//        {
-//            //resp.sendRedirect("/auth");
-//            resp.setStatus(401);
-//            return;
-//        }
-//        if(sheildedUser.getAuthorization() !=  Authorization.ADMIN)
-//        {
-//            //resp.sendRedirect("/auth");
-//            resp.setStatus(403);
-//            System.out.println("Unauthorized Command");
-//            return;
-//        }
+        resp.setContentType("application/json");
+        HttpSession session = req.getSession(false);
+        AppUser adminUser = (session == null) ? null : (AppUser) session.getAttribute("auth-user");
+        if(adminUser == null)
+        {
+            //resp.sendRedirect("/auth");
+            resp.setStatus(401);
+            return;
+        }
+        if(adminUser.getAuthorization() != Authorization.ADMIN)
+        {
+            //resp.sendRedirect("/auth");
+            resp.setStatus(403);
+            System.out.println("Unauthorized Command");
+            return;
+        }
 
 
         try{

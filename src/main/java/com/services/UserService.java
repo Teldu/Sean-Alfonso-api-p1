@@ -61,13 +61,13 @@ public class UserService {
         return userRepo.saveAdmin(newUser);
     }
 
-    public AppUser login(String username, String password, String type) {
+    public AppUser login(String username, String password) {
 
         if (username == null || username.trim().equals("") || password == null || password.trim().equals("")) {
             throw new InvalidRequestException("Invalid user credentials provided!");
         }
 
-        AppUser authUser = userRepo.findUserByCredentials(username, password, type);
+        AppUser authUser = userRepo.findUserByCredentials(username, password);
 
         if (authUser == null) {
             throw new AuthenticationException("Invalid credentials provided!");

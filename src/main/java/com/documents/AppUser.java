@@ -10,8 +10,6 @@ import java.util.Objects;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AppUser {
-
-
     private String id;
     private String firstName;
     private String lastName;

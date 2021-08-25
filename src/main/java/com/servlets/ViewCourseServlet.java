@@ -39,7 +39,6 @@ public class ViewCourseServlet  extends HttpServlet {
         HttpSession session = req.getSession(false);
         if(session == null){
             respWriter.write("Session has expired");
-            System.out.println("Session has expired");
             return;
         }
 
