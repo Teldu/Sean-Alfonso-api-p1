@@ -35,8 +35,7 @@ public class UserServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         PrintWriter respWriter = resp.getWriter();
-        HttpSession session = req.getSession(false);
-        Principal principal = (session == null) ? null : (Principal) session.getAttribute("auth-user");
+        Principal principal = (Principal) req.getAttribute("principal");
         if(principal == null)
         {
             respWriter.write("<h1></h1>");

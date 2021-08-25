@@ -122,10 +122,10 @@ public class UserServiceTestSuite {
         //Arrange
         AppUser existingUser = new AppUser("original", "original", "original", "duplicate", "original");
         AppUser duplicate = new AppUser("first", "last", "email", "duplicate", "password");
-        when(mockUserRepo.findUserByCredentials(duplicate.getUsername(), duplicate.getPassword(), ""));
+        when(mockUserRepo.findUserByCredentials(duplicate.getUsername(), duplicate.getPassword()));
 
         //Act
-        verify(mockUserRepo, times(1)).findUserByCredentials(duplicate.getUsername(), duplicate.getPassword(), "");
+        verify(mockUserRepo, times(1)).findUserByCredentials(duplicate.getUsername(), duplicate.getPassword());
 
 
         //Assert

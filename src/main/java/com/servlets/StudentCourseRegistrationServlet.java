@@ -39,18 +39,16 @@ public class StudentCourseRegistrationServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("application/json");
-        HttpSession session = req.getSession(false);
-        if(session == null)
+        Principal principal = (Principal) req.getAttribute("principal");
+        if(principal == null)
         {
             resp.sendError(400 , "session expired");
             return;
         }
-        AppUser appUser  = (session == null) ? null : (AppUser) session.getAttribute("auth-user");
-
-
-
 
         try {
+            SheildedUser appUser  = userService.FindUserById(principal.getId());
+
             PrintWriter respWriter = resp.getWriter();
             Request request = mapper.readValue(req.getInputStream() , Request.class);
             respWriter.write(request.getRequest());

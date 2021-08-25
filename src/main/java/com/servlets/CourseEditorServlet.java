@@ -3,6 +3,7 @@ package com.servlets;
 import com.documents.AppUser;
 import com.documents.Authorization;
 import com.documents.ClassDetails;
+import com.dto.Principal;
 import com.dto.SheildedUser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.services.RegistrationCatalog;
@@ -33,23 +34,22 @@ public class CourseEditorServlet extends HttpServlet {
     }
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("application/json");
-        HttpSession session = req.getSession(false);
-        AppUser adminUser = (session == null) ? null : (AppUser) session.getAttribute("auth-user");
+        Principal principal = (Principal) req.getAttribute("principal");
 
 
-        if(adminUser == null)
+        if(principal == null)
         {
             resp.setStatus(401);
             return;
         }
 
-        Authorization status = adminUser.getAuthorization();
+        String status = principal.getType();
         try{
-            if(status == Authorization.NONE || status == null)
+            if(status == Authorization.NONE.toString() || status == null)
             {
                 resp.setStatus(404);
                 return;
-            }else if (status == Authorization.STUDENT){
+            }else if (status == Authorization.STUDENT.toString()){
 
                 resp.sendError(404 , "Unauthorized command");
             }else

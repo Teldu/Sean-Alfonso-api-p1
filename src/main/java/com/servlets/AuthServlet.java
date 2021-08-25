@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.services.UserService;
 import com.util.exceptions.AuthenticationException;
+import com.web.security.TokenGenerator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,12 +25,13 @@ public class AuthServlet extends HttpServlet {
 
     private final UserService userService;
     private final ObjectMapper mapper;
+    private final TokenGenerator tokenGenerator;
     private final Logger logger = LogManager.getLogger(this.getClass());
 
-    public AuthServlet(UserService userService , ObjectMapper mapper) {
+    public AuthServlet(UserService userService , ObjectMapper mapper , TokenGenerator tokenGenerator) {
         this.mapper = mapper;
         this.userService = userService;
-
+        this.tokenGenerator = tokenGenerator;
     }
 
     @Override
@@ -45,8 +47,9 @@ public class AuthServlet extends HttpServlet {
             String payload = mapper.writeValueAsString(p);
             respWriter.write(payload);
 
-            HttpSession session = req.getSession();
-            session.setAttribute("auth-user", user);
+
+            String token = tokenGenerator.createToken(p);
+            resp.setHeader(tokenGenerator.getJwtConfig().getHeader(), token);
 
 
         } catch (AuthenticationException ae) {

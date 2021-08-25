@@ -4,6 +4,7 @@ import com.documents.AppUser;
 import com.documents.ClassDetails;
 import com.dto.Credentials;
 import com.dto.Principal;
+import com.dto.SheildedUser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.services.UserService;
 import com.util.exceptions.AuthenticationException;
@@ -34,8 +35,9 @@ public class ViewStudentCourseServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("application/json");
-        HttpSession session = req.getSession(false);
-        AppUser appUser = (session == null) ? null : (AppUser) session.getAttribute("auth-user");
+        Principal principal = (Principal) req.getAttribute("principal");
+        // finding the current user from the principal in the database
+        SheildedUser appUser = principal == null ? null : userService.FindUserById(principal.getId());
         String courseName = req.getParameter("coursename");
         if(appUser == null)
         {

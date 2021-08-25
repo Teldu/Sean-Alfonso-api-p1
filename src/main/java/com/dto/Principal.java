@@ -3,6 +3,7 @@ package com.dto;
 import com.documents.AppUser;
 import com.documents.Authorization;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import io.jsonwebtoken.Claims;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Principal {
@@ -14,8 +15,14 @@ public class Principal {
 
     public Principal() { }
 
+    public Principal(Claims jwtClaims) {
+        this._id = jwtClaims.getId();
+        this.username = jwtClaims.getSubject();
+        this.type = jwtClaims.get("role", String.class);
+    }
     public Principal(AppUser appUser)
     {
+        System.out.println(appUser);
        this.username =  appUser.getUsername();
        this._id = appUser.getId();
        this.type = appUser.getAuthorization().toString();
