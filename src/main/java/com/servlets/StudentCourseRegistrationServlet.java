@@ -1,6 +1,7 @@
 package com.servlets;
 
 import com.documents.AppUser;
+import com.documents.Authorization;
 import com.dto.Credentials;
 import com.dto.Principal;
 import com.dto.Request;
@@ -46,8 +47,16 @@ public class StudentCourseRegistrationServlet extends HttpServlet {
             return;
         }
 
+        if (principal.getType().equals(Authorization.ADMIN.toString()))
+        {
+            System.out.println(principal.getUsername());
+            resp.sendError(403 , "Admin Cannot Register for Courses");
+        }
+
         try {
-            SheildedUser appUser  = userService.FindUserById(principal.getId());
+
+
+            SheildedUser appUser  = userService.FindUserName(principal.getUsername());
 
             PrintWriter respWriter = resp.getWriter();
             Request request = mapper.readValue(req.getInputStream() , Request.class);

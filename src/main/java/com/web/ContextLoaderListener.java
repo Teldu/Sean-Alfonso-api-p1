@@ -7,6 +7,7 @@ import com.services.RegistrationCatalog;
 import com.services.UserService;
 import com.servlets.*;
 import com.util.MongoClientFactory;
+import com.web.filters.AuthFilter;
 import com.web.security.JwtConfig;
 import com.web.security.TokenGenerator;
 
@@ -39,14 +40,17 @@ public class ContextLoaderListener implements ServletContextListener {
             CourseServlet courseServlet = new CourseServlet(registrationCatalog, userService, mapper);
             StudentCourseRegistrationServlet studentCourseRegistrationServlet = new StudentCourseRegistrationServlet(userService, mapper);
             ViewStudentCourseServlet viewStudentCourseServlet = new ViewStudentCourseServlet(userService, mapper);
+            CourseEditorServlet courseEditorServlet = new CourseEditorServlet(registrationCatalog, userService, mapper);
 
             ServletContext context = sce.getServletContext();
             context.addFilter("AuthFilter" , authFilter).addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST) , true , "/*");
             context.addServlet("UserServlet", userServlet).addMapping("/users/*");
             context.addServlet("CourseServlet", courseServlet).addMapping("/users/courses");
+            context.addServlet("CourseEditorServlet", courseEditorServlet).addMapping("/users/editCourses");
             context.addServlet("StudentCourseRegistrationServlet", studentCourseRegistrationServlet).addMapping("/users/registration");
             context.addServlet("StudentCourseViewServlet", viewStudentCourseServlet).addMapping("/viewStudentCourse");
             context.addServlet("AuthServlet", authServlet).addMapping("/auth");
+
         }catch (Exception e)
         {
             e.printStackTrace();

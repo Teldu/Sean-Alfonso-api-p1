@@ -1,9 +1,7 @@
 package com.documents;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,8 +11,9 @@ public class ClassDetails {
     private String className;
     private int classSize;
     private boolean open = false;
-    private LocalDateTime registrationTime;
-    private LocalDateTime registrationClosedTime;
+    private Date3 registrationTime;
+    private Date3 registrationClosedTime;
+
 
     private String meetingPeriod = "MWF";
     private List<String> studentsRegistered = new ArrayList<String>();
@@ -22,19 +21,19 @@ public class ClassDetails {
 
     public ClassDetails() {super(); }
 
-    public ClassDetails(boolean open , LocalDateTime registrationTime )
+    public ClassDetails(boolean open , Date3 registrationTime )
     {
         this.open = open;
         this.registrationTime = registrationTime;
     }
 
-    public ClassDetails(int classSize, boolean open, LocalDateTime registrationTime, String meetingPeriod) {
-        new ClassDetails(open , registrationTime);
+    public ClassDetails(int classSize, boolean open, Date3 registrationTime, String meetingPeriod) {
+        new com.documents.ClassDetails(open , registrationTime);
         this.classSize = classSize;
         this.meetingPeriod = meetingPeriod;
     }
-    public ClassDetails(String className , int classSize, boolean open, LocalDateTime registrationTime, String meetingPeriod) {
-        new ClassDetails(open , registrationTime);
+    public ClassDetails(String className , int classSize, boolean open, Date3 registrationTime, String meetingPeriod) {
+        new com.documents.ClassDetails(open , registrationTime);
         this.classSize = classSize;
         this.meetingPeriod = meetingPeriod;
         this.className = className;
@@ -76,19 +75,19 @@ public class ClassDetails {
         this.open = open;
     }
 
-    public LocalDateTime getRegistrationTime() {
+    public Date3 getRegistrationTime() {
         return registrationTime;
     }
 
-    public void setRegistrationTime(LocalDateTime registrationTime) {
+    public void setRegistrationTime(Date3 registrationTime) {
         this.registrationTime = registrationTime;
     }
 
-    public LocalDateTime getRegistrationClosedTime() {
+    public Date3 getRegistrationClosedTime() {
         return registrationClosedTime;
     }
 
-    public void setRegistrationClosedTime(LocalDateTime registrationClosedTime) {
+    public void setRegistrationClosedTime(Date3 registrationClosedTime) {
         this.registrationClosedTime = registrationClosedTime;
     }
 

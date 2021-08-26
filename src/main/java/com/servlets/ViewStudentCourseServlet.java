@@ -1,13 +1,9 @@
 package com.servlets;
 
-import com.documents.AppUser;
-import com.documents.ClassDetails;
-import com.dto.Credentials;
 import com.dto.Principal;
 import com.dto.SheildedUser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.services.UserService;
-import com.util.exceptions.AuthenticationException;
 import com.util.exceptions.InvalidRequestException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,10 +12,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
 
 public class ViewStudentCourseServlet extends HttpServlet {
     private final UserService userService;

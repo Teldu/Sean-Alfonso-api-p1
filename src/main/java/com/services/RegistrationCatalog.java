@@ -1,15 +1,13 @@
 package com.services;
 import com.datasourse.repos.CrudRepository;
-import com.documents.AppUser;
-import com.documents.MeetingPeriods;
+import com.documents.ClassDetails;
 import com.documents.ClassDetails;
 import com.dto.Classdto;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.client.*;
 
 
-
+import com.documents.Date3;
 import com.util.MongoClientFactory;
 import com.util.exceptions.DataSourceException;
 import com.util.exceptions.InvalidRequestException;
@@ -18,7 +16,6 @@ import org.bson.codecs.configuration.CodecProvider;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -68,7 +65,7 @@ public class RegistrationCatalog implements CrudRepository<Classdto> {
         return null;
     }
 
-    public Classdto save(ClassDetails classDetails) {
+    public Classdto save(ClassDetails registerCourseRequest) {
 
         try {
             MongoClient mongoClient = MongoClientFactory.getInstance().getConnection(); //connect to mongoDB
@@ -76,17 +73,17 @@ public class RegistrationCatalog implements CrudRepository<Classdto> {
 
             MongoDatabase classDb = mongoClient.getDatabase(DatabaseName);
                  MongoCollection<Document> usersCollection  = classDb.getCollection(CourseCollectionName);
-                Document newCDoc = new Document("classSize", classDetails.getClassSize())
-                                                .append("className", classDetails.getClassName())
-                                                .append("open", classDetails.isOpen())
-                                                .append("registrationTime" , classDetails.getRegistrationTime())
-                                                .append("registrationClosedTime" , classDetails.getRegistrationClosedTime())
-                                                .append("meetingPeriod" , classDetails.getMeetingPeriod())
-                                                .append("studentsRegistered" , classDetails.getStudentsRegistered());
+                Document newCDoc = new Document("classSize", registerCourseRequest.getClassSize())
+                                                .append("className", registerCourseRequest.getClassName())
+                                                .append("open", registerCourseRequest.isOpen())
+                                                .append("registrationTime" , registerCourseRequest.getRegistrationTime())
+                                                .append("registrationClosedTime" , registerCourseRequest.getRegistrationClosedTime())
+                                                .append("meetingPeriod" , registerCourseRequest.getMeetingPeriod())
+                                                .append("studentsRegistered" , registerCourseRequest.getStudentsRegistered());
 
 
                     usersCollection.insertOne(newCDoc);
-                    return new Classdto(classDetails);
+                    return new Classdto(registerCourseRequest);
 
         } catch (Exception e) {
            // logger.error(e.getMessage());
@@ -106,9 +103,9 @@ public class RegistrationCatalog implements CrudRepository<Classdto> {
         return false;
     }
 
-    public boolean UpdateFull(ClassDetails classDetails)
+    public boolean UpdateFull(ClassDetails registerCourseRequest)
     {
-        if(classDetails == null)
+        if(registerCourseRequest == null)
         {
             throw new InvalidRequestException("Cannot Search with null resource");
         }
@@ -116,13 +113,13 @@ public class RegistrationCatalog implements CrudRepository<Classdto> {
             MongoClient mongoClient = MongoClientFactory.getInstance().getConnection();
 
             MongoDatabase classDb = mongoClient.getDatabase(DatabaseName);
-            Document courseDescription = new Document("className" , classDetails.getClassName());
-            Document authCourseDoc = classDb.getCollection(classDetails.getClassName())
-                                            .findOneAndUpdate(courseDescription , new Document("classSize", classDetails.getClassSize())
-                                                                                        .append("className", classDetails.getClassName())
-                                                                                        .append("open", classDetails.isOpen())
-                                                                                        .append("registrationTime" , classDetails.getRegistrationTime())
-                                                                                        .append("meetingPeriod" , classDetails.getMeetingPeriod()));
+            Document courseDescription = new Document("className" , registerCourseRequest.getClassName());
+            Document authCourseDoc = classDb.getCollection(registerCourseRequest.getClassName())
+                                            .findOneAndUpdate(courseDescription , new Document("classSize", registerCourseRequest.getClassSize())
+                                                                                        .append("className", registerCourseRequest.getClassName())
+                                                                                        .append("open", registerCourseRequest.isOpen())
+                                                                                        .append("registrationTime" , registerCourseRequest.getRegistrationTime())
+                                                                                        .append("meetingPeriod" , registerCourseRequest.getMeetingPeriod()));
 
            if(authCourseDoc == null)
                return false;
@@ -194,6 +191,49 @@ public class RegistrationCatalog implements CrudRepository<Classdto> {
         }
     }
 
+
+    public List<String> FindAllStudentsInCourse(String courseName) {
+        try {
+            MongoClient mongoClient = MongoClientFactory.getInstance().getConnection();
+
+            MongoDatabase registraiondb = mongoClient.getDatabase(DatabaseName).withCodecRegistry(pojoCodecRegistry);
+            MongoCollection<ClassDetails> courseCollection = registraiondb.getCollection("Courses", ClassDetails.class);
+            Document queryDoc = new Document("className", courseName);
+            ClassDetails targetCourse = courseCollection.find(queryDoc).first();
+
+            if (targetCourse == null) {
+                String msg = String.format("For some reason the targeted course could not be found in the db using: %s, %s\n", courseName, 4);
+                throw new RuntimeException(msg);
+            }
+
+           return targetCourse.getStudentsRegistered();
+
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new DataSourceException("Unexpected exception", e);
+        }
+    }
+
+    public void RemoveClass(String className)
+    {
+        try {
+            MongoClient mongoClient = MongoClientFactory.getInstance().getConnection();
+
+            MongoDatabase registraiondb = mongoClient.getDatabase(DatabaseName);
+            MongoCollection<Document> UserCollection = registraiondb.getCollection("Courses");
+            Document queryDoc = new Document("className", className);
+
+            Document uthDoc = UserCollection.findOneAndDelete(queryDoc);
+
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            throw new DataSourceException("Possibly a connection exception" , e);
+        }
+    }
 
     public boolean UpdateClassSize(String className , int classSize)
     {
@@ -321,15 +361,15 @@ public class RegistrationCatalog implements CrudRepository<Classdto> {
                 Object meetingPeriod = classDoc.get("meetingPeriod");
                 Object studentsRegistered = classDoc.get("studentsRegistered");
                 // create pojo
-                ClassDetails classDetails = new ClassDetails((String) classname  , (int)classSize, (boolean)classStatus ,(LocalDateTime) registrationTime , (String) meetingPeriod);
-                classDetails.setStudentsRegistered((List<String>) studentsRegistered);
+                ClassDetails registerCourseRequest = new ClassDetails((String) classname  , (int)classSize, (boolean)classStatus ,(Date3) registrationTime , (String) meetingPeriod);
+                registerCourseRequest.setStudentsRegistered((List<String>) studentsRegistered);
 
-                if(classDetails == null)
+                if(registerCourseRequest == null)
                 {
                     throw new InvalidRequestException("element list cannot be created : null");
                 }
                 // add pojo to list to then forward to servlet
-                 outClassList.add(classDetails);
+                 outClassList.add(registerCourseRequest);
             }
 
             return outClassList;

@@ -8,6 +8,7 @@ import com.util.exceptions.AuthenticationException;
 import com.util.exceptions.InvalidRequestException;
 import com.util.exceptions.ResourcePersistenceException;
 
+import java.util.List;
 import java.util.zip.DataFormatException;
 
 public class UserService {
@@ -25,6 +26,35 @@ public class UserService {
     public SheildedUser FindUserById(String id)
     {
         return new SheildedUser(userRepo.findById(id));
+    }
+
+    public SheildedUser FindUserName(String username) throws InvalidRequestException
+    {
+        if(username == null)
+        {
+            throw new InvalidRequestException("null data");
+        }
+        return new SheildedUser(userRepo.findUserByUsername(username));
+    }
+
+
+    public void RemoveClassFromCatalog(String courseName) throws InvalidRequestException
+    {
+        if(courseName == null) { throw new InvalidRequestException("Null Data"); }
+
+        // aquiring student roster for given coursename
+       List<String> registeredStudents = registrationCatalog.FindAllStudentsInCourse(courseName);
+
+        //remove class from each student on roster
+        for (String studentName : registeredStudents)
+        {
+            // finding student in data base to get username in order to use RemoveUserFromClass method
+           AppUser foundStudent = userRepo.findUserByFirstName(studentName);
+           //removing givin course name from student planner
+            userRepo.RemoveUserFromClass(foundStudent.getUsername() , courseName);
+        }
+        //removing course from data base
+        registrationCatalog.RemoveClass(courseName);
     }
 
     public AppUser register(AppUser newUser) {

@@ -1,12 +1,10 @@
 package com.datasourse.repos;
 
-import com.documents.ClassDetails;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.util.MongoClientFactory;
-import com.util.exceptions.InvalidRequestException;
 import org.bson.Document;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
@@ -57,10 +55,59 @@ public class UserRepository implements CrudRepository<AppUser> {
             throw new DataSourceException("An unexpected exception occurred.", e);
         }
     }
+    public AppUser findUserByFirstName(String firstName) {
+
+        try {
+
+            MongoDatabase classDatabase = mongoClient.getDatabase(DatabaseName);
+            MongoCollection<Document> usersCollection = classDatabase.getCollection(StudentCollectionName);
+            Document queryDoc = new Document("firstName", firstName);
+            Document authUserDoc = usersCollection.find(queryDoc).first();
+
+            if (authUserDoc == null) {
+                return null;
+            }
+
+            ObjectMapper mapper = new ObjectMapper();
+            AppUser authUser = mapper.readValue(authUserDoc.toJson(), AppUser.class);
+
+            return authUser;
+
+        } catch (JsonMappingException jme) {
+            jme.printStackTrace(); // TODO log this to a file
+            throw new DataSourceException("An exception occurred while mapping the document.", jme);
+        } catch (Exception e) {
+            e.printStackTrace(); // TODO log this to a file
+            throw new DataSourceException("An unexpected exception occurred.", e);
+        }
+    }
 
     // TODO implement this so that we can prevent multiple users from having the same username!
     public AppUser findUserByUsername(String username) {
-        return null;
+
+        try {
+
+            MongoDatabase classDatabase = mongoClient.getDatabase(DatabaseName);
+            MongoCollection<Document> usersCollection = classDatabase.getCollection(StudentCollectionName);
+            Document queryDoc = new Document("username", username);
+            Document authUserDoc = usersCollection.find(queryDoc).first();
+
+            if (authUserDoc == null) {
+                return null;
+            }
+
+            ObjectMapper mapper = new ObjectMapper();
+            AppUser authUser = mapper.readValue(authUserDoc.toJson(), AppUser.class);
+
+            return authUser;
+
+        } catch (JsonMappingException jme) {
+            jme.printStackTrace(); // TODO log this to a file
+            throw new DataSourceException("An exception occurred while mapping the document.", jme);
+        } catch (Exception e) {
+            e.printStackTrace(); // TODO log this to a file
+            throw new DataSourceException("An unexpected exception occurred.", e);
+        }
     }
 
     // TODO implement this so that we can prevent multiple users from having the same email!
@@ -75,7 +122,7 @@ public class UserRepository implements CrudRepository<AppUser> {
 
             MongoDatabase classDb = mongoClient.getDatabase(DatabaseName);
             MongoCollection<Document> usersCollection = classDb.getCollection(StudentCollectionName);
-            Document newUserDoc = new Document("id", id);
+            Document newUserDoc = new Document("_id", id);
             Document foundUser = usersCollection.find(newUserDoc).first();
 
             if (foundUser == null) {

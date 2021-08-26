@@ -1,14 +1,13 @@
 package com.dto;
 
 import com.documents.AppUser;
-import com.documents.Authorization;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class SheildedUser {
-    private String id;
+    private String _id;
     private String firstName;
     private String lastName;
     private String email;
@@ -19,7 +18,7 @@ public class SheildedUser {
 
     public SheildedUser(AppUser appUser)
     {
-        this.id = appUser.getId();
+        this._id = appUser.getId();
         this.firstName = appUser.getFirstName();
         this.lastName = appUser.getLastName();
         this.email = appUser.getEmail();
@@ -29,12 +28,12 @@ public class SheildedUser {
         this.type = appUser.getAuthorization().toString();
     }
 
-    public String getId() {
-        return id;
+    public String get_id() {
+        return _id;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void set_id(String _id) {
+        this._id = _id;
     }
 
     public String getFirstName() {

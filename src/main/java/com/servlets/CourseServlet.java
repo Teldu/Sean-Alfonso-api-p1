@@ -1,11 +1,8 @@
 package com.servlets;
 
-import com.documents.AppUser;
-import com.documents.Authorization;
 import com.documents.ClassDetails;
 import com.dto.Classdto;
 import com.dto.Principal;
-import com.dto.SheildedUser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.services.RegistrationCatalog;
@@ -18,7 +15,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
@@ -55,9 +51,9 @@ public class CourseServlet extends HttpServlet {
                 System.out.println(allClassDetails);
                 respWriter.write(mapper.writeValueAsString(allClassDetails));
             }else   {
-                ClassDetails classDetails = registrationCatalog.GetClassDetailsOf(courseName);
-                System.out.println(classDetails);
-                respWriter.write(mapper.writeValueAsString(classDetails));
+                ClassDetails registerCourseRequest = registrationCatalog.GetClassDetailsOf(courseName);
+                System.out.println(registerCourseRequest);
+                respWriter.write(mapper.writeValueAsString(registerCourseRequest));
             }
 
         }   catch(InvalidRequestException e)
@@ -98,11 +94,11 @@ public class CourseServlet extends HttpServlet {
         try{
 
             PrintWriter respWriter = resp.getWriter();
-            ClassDetails classDetails = mapper.readValue(req.getInputStream() , ClassDetails.class);
-            respWriter.write("<h1>" + classDetails.toString() + "</h1>");
+            ClassDetails registerCourseRequest = mapper.readValue(req.getInputStream() , ClassDetails.class);
+            respWriter.write("<h1>" + registerCourseRequest.toString() + "</h1>");
 
-            if(classDetails != null) {
-             Classdto classD =  registrationCatalog.save(classDetails);
+            if(registerCourseRequest != null) {
+             Classdto classD =  registrationCatalog.save(registerCourseRequest);
              String classInfo = mapper.writeValueAsString(classD);
                 respWriter.write("<h1>" + classInfo + "</h1>");
             }
