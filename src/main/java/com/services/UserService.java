@@ -3,6 +3,7 @@ package com.services;
 import com.documents.AppUser;
 import com.datasourse.repos.UserRepository;
 
+import com.documents.ClassDetails;
 import com.dto.SheildedUser;
 import com.util.exceptions.AuthenticationException;
 import com.util.exceptions.InvalidRequestException;
@@ -107,6 +108,11 @@ public class UserService {
 
         return authUser;
 
+    }
+
+    public ClassDetails getClassDetailsOf(String courseName)
+    {
+       return registrationCatalog.GetClassDetailsOf(courseName);
     }
 
     public void AddClass(String courseName , String addedStudent, String username) throws DataFormatException , InvalidRequestException{

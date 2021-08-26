@@ -31,7 +31,7 @@ public class ViewStudentCourseServlet extends HttpServlet {
         resp.setContentType("application/json");
         Principal principal = (Principal) req.getAttribute("principal");
         // finding the current user from the principal in the database
-        SheildedUser appUser = principal == null ? null : userService.FindUserById(principal.getId());
+        SheildedUser appUser = (principal == null) ? null : userService.FindUserName(principal.getUsername());
         String courseName = req.getParameter("coursename");
         if(appUser == null)
         {

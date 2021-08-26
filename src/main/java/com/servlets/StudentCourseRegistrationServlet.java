@@ -2,6 +2,7 @@ package com.servlets;
 
 import com.documents.AppUser;
 import com.documents.Authorization;
+import com.documents.ClassDetails;
 import com.dto.Credentials;
 import com.dto.Principal;
 import com.dto.Request;
@@ -84,6 +85,12 @@ public class StudentCourseRegistrationServlet extends HttpServlet {
              }
             else
             {
+                ClassDetails tempClass = userService.getClassDetailsOf(request.getName());
+                if(tempClass.getStudentsRegistered().contains(appUser.getFirstName()))
+                {
+                    resp.sendError(400 , "Already Registered For Class");
+                    return;
+                }
                 userService.AddClass( request.getName() , appUser.getFirstName(), appUser.getUsername());
                 respWriter.write("Succesfully Added " + request.getRequest());
             }

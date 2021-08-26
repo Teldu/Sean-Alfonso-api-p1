@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.services.UserService;
 import com.util.exceptions.AuthenticationException;
 import com.web.security.TokenGenerator;
+import io.jsonwebtoken.Claims;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -48,8 +49,10 @@ public class AuthServlet extends HttpServlet {
             respWriter.write(payload);
 
 
+
             String token = tokenGenerator.createToken(p);
             resp.setHeader(tokenGenerator.getJwtConfig().getHeader(), token);
+            System.out.println(token);
 
 
         } catch (AuthenticationException ae) {
