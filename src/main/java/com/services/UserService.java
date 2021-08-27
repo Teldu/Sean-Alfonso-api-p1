@@ -5,10 +5,12 @@ import com.datasourse.repos.UserRepository;
 
 import com.documents.ClassDetails;
 import com.dto.SheildedUser;
+import com.util.DateParser;
 import com.util.exceptions.AuthenticationException;
 import com.util.exceptions.InvalidRequestException;
 import com.util.exceptions.ResourcePersistenceException;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.zip.DataFormatException;
 
@@ -16,7 +18,7 @@ public class UserService {
 
     private final UserRepository userRepo;
     private final RegistrationCatalog registrationCatalog;
-
+    private DateParser dateParser =  new DateParser();
     public UserService(UserRepository userRepo , RegistrationCatalog registrationCatalog) {
 
         this.userRepo = userRepo;
@@ -144,18 +146,38 @@ public class UserService {
 
     public void AddClass(String courseName , String addedStudent, String username) throws DataFormatException , InvalidRequestException{
 
+        ClassDetails classDetails = registrationCatalog.GetClassDetailsOf(courseName);
         if(courseName == null || addedStudent == null || username == null || registrationCatalog.GetClassDetailsOf(courseName) == null)
         {
             throw new DataFormatException("Provided Information is Invalid");
         }
 
-        if(registrationCatalog.GetClassDetailsOf(courseName).isOpen() == false)
+        if(classDetails.isOpen() == false)
         {
                 throw new InvalidRequestException("Cannot Register for CLOSED Course");
         }
 
-        userRepo.AddUserToClass(username , courseName);
+        if(classDetails.getStudentsRegistered().size() >= classDetails.getClassSize())
+        {
+            throw new InvalidRequestException("Class is full");
+        }
+
+        //if in window
+        if(dateParser.Window(classDetails.getRegistrationTime(), classDetails.getRegistrationClosedTime()))
+        {
+            classDetails.setOpen(true);
+            registrationCatalog.UpdateFull(classDetails.getClassName(), classDetails);
+        }else
+        {
+            //else
+            classDetails.setOpen(false);
+            registrationCatalog.UpdateFull(classDetails.getClassName(), classDetails);
+            throw new InvalidRequestException("Class is closed");
+        }
+
+        // finally
         registrationCatalog.AddStudentToCourse(courseName, addedStudent);
+        userRepo.AddUserToClass(username , courseName);
     }
 
     public void DropClass(String courseName , String dropedStudent , String username) throws DataFormatException {

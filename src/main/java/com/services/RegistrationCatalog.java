@@ -121,8 +121,8 @@ public class RegistrationCatalog implements CrudRepository<Classdto> {
                     .append("className", registerCourseRequest.getClassName())
                     .append("open", registerCourseRequest.isOpen())
                     .append("registrationTime" , registerCourseRequest.getRegistrationTime())
-                    .append("registrationClosedTime" , registerCourseRequest.getRegistrationClosedTime());
-                    //.append("meetingPeriod" , registerCourseRequest.getMeetingPeriod())
+                    .append("registrationClosedTime" , registerCourseRequest.getRegistrationClosedTime())
+                    .append("meetingPeriod" , registerCourseRequest.getMeetingPeriod());
             if(queryDoc == null || queryDoc1 == null || courseCollection.find(queryDoc).first() == null)
             {
                 System.out.println("failed to update");

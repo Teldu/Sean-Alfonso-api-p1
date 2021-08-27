@@ -4,6 +4,7 @@ com\servlets\StudentCourseRegistrationServlet.class
 com\util\MongoClientFactory.class
 com\documents\ClassDetails.class
 com\services\RegistrationCatalog.class
+com\util\exceptions\OutOfTimeException.class
 com\web\security\TokenGenerator.class
 com\util\exceptions\ScreenNotFoundException.class
 com\documents\Authorization.class
@@ -20,6 +21,7 @@ com\util\exceptions\AuthenticationException.class
 com\servlets\CourseServlet.class
 com\documents\AppUser.class
 com\dto\Request.class
+com\util\DateParser.class
 com\web\filters\CorsFilter.class
 com\servlets\ViewStudentCourseServlet.class
 com\dto\SheildedUser.class
