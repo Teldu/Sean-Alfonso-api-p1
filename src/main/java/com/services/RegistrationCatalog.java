@@ -103,8 +103,9 @@ public class RegistrationCatalog implements CrudRepository<Classdto> {
         return false;
     }
 
-    public boolean UpdateFull(ClassDetails registerCourseRequest)
+    public boolean UpdateFull( String oldCourseName, ClassDetails registerCourseRequest)
     {
+
         if(registerCourseRequest == null)
         {
             throw new InvalidRequestException("Cannot Search with null resource");
@@ -112,18 +113,27 @@ public class RegistrationCatalog implements CrudRepository<Classdto> {
         try {
             MongoClient mongoClient = MongoClientFactory.getInstance().getConnection();
 
-            MongoDatabase classDb = mongoClient.getDatabase(DatabaseName);
-            Document courseDescription = new Document("className" , registerCourseRequest.getClassName());
-            Document authCourseDoc = classDb.getCollection(registerCourseRequest.getClassName())
-                                            .findOneAndUpdate(courseDescription , new Document("classSize", registerCourseRequest.getClassSize())
-                                                                                        .append("className", registerCourseRequest.getClassName())
-                                                                                        .append("open", registerCourseRequest.isOpen())
-                                                                                        .append("registrationTime" , registerCourseRequest.getRegistrationTime())
-                                                                                        .append("meetingPeriod" , registerCourseRequest.getMeetingPeriod()));
+            MongoDatabase registraiondb = mongoClient.getDatabase(DatabaseName).withCodecRegistry(pojoCodecRegistry);
+            MongoCollection<ClassDetails> courseCollection = registraiondb.getCollection("Courses", ClassDetails.class);
+            Document queryDoc = new Document("className", oldCourseName);
 
-           if(authCourseDoc == null)
-               return false;
+            Document queryDoc1 =new Document("classSize", registerCourseRequest.getClassSize())
+                    .append("className", registerCourseRequest.getClassName())
+                    .append("open", registerCourseRequest.isOpen())
+                    .append("registrationTime" , registerCourseRequest.getRegistrationTime())
+                    .append("registrationClosedTime" , registerCourseRequest.getRegistrationClosedTime());
+                    //.append("meetingPeriod" , registerCourseRequest.getMeetingPeriod())
+            if(queryDoc == null || queryDoc1 == null || courseCollection.find(queryDoc).first() == null)
+            {
+                System.out.println("failed to update");
+                return false;
 
+            }
+
+
+             courseCollection.findOneAndUpdate(queryDoc ,new Document("$set" , new Document(queryDoc1)));
+
+            System.out.println(courseCollection.find(queryDoc).first() );
 
 
         }catch (Exception e)
@@ -361,7 +371,7 @@ public class RegistrationCatalog implements CrudRepository<Classdto> {
                 Object meetingPeriod = classDoc.get("meetingPeriod");
                 Object studentsRegistered = classDoc.get("studentsRegistered");
                 // create pojo
-                ClassDetails registerCourseRequest = new ClassDetails((String) classname  , (int)classSize, (boolean)classStatus ,(Date3) registrationTime , (String) meetingPeriod);
+                ClassDetails registerCourseRequest = new ClassDetails((String) classname  , (int)classSize, (boolean)classStatus ,(String) registrationTime , (String) meetingPeriod);
                 registerCourseRequest.setStudentsRegistered((List<String>) studentsRegistered);
 
                 if(registerCourseRequest == null)

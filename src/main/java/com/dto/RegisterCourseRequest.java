@@ -12,28 +12,28 @@ public class RegisterCourseRequest {
     private String className;
     private int classSize;
     private boolean open = false;
-    private Date3 registrationTime;
-    private Date3 registrationClosedTime;
+    private String registrationTime;
+    private String registrationClosedTime;
     private String intent;
-
+    private String targetCourse;
     private String meetingPeriod = "MWF";
     private List<String> studentsRegistered = new ArrayList<String>();
 
 
     public RegisterCourseRequest() {super(); }
 
-    public RegisterCourseRequest(boolean open , Date3 registrationTime )
+    public RegisterCourseRequest(boolean open , String registrationTime )
     {
         this.open = open;
         this.registrationTime = registrationTime;
     }
 
-    public RegisterCourseRequest(int classSize, boolean open, Date3 registrationTime, String meetingPeriod) {
+    public RegisterCourseRequest(int classSize, boolean open, String registrationTime, String meetingPeriod) {
         new RegisterCourseRequest(open , registrationTime);
         this.classSize = classSize;
         this.meetingPeriod = meetingPeriod;
     }
-    public RegisterCourseRequest(String className , int classSize, boolean open, Date3 registrationTime, String meetingPeriod) {
+    public RegisterCourseRequest(String className , int classSize, boolean open, String registrationTime, String meetingPeriod) {
         new RegisterCourseRequest(open , registrationTime);
         this.classSize = classSize;
         this.meetingPeriod = meetingPeriod;
@@ -64,6 +64,14 @@ public class RegisterCourseRequest {
         this.intent = intent;
     }
 
+    public String getTargetCourse() {
+        return targetCourse;
+    }
+
+    public void setTargetCourse(String targetCourse) {
+        this.targetCourse = targetCourse;
+    }
+
     public void setStudentsRegistered(List<String> studentsRegistered) {
         this.studentsRegistered = studentsRegistered;
     }
@@ -84,19 +92,19 @@ public class RegisterCourseRequest {
         this.open = open;
     }
 
-    public Date3 getRegistrationTime() {
+    public String getRegistrationTime() {
         return registrationTime;
     }
 
-    public void setRegistrationTime(Date3 registrationTime) {
+    public void setRegistrationTime(String registrationTime) {
         this.registrationTime = registrationTime;
     }
 
-    public Date3 getRegistrationClosedTime() {
+    public String getRegistrationClosedTime() {
         return registrationClosedTime;
     }
 
-    public void setRegistrationClosedTime(Date3 registrationClosedTime) {
+    public void setRegistrationClosedTime(String registrationClosedTime) {
         this.registrationClosedTime = registrationClosedTime;
     }
 
@@ -129,6 +137,7 @@ public class RegisterCourseRequest {
                 ", registrationTime=" + registrationTime +
                 ", registrationClosedTime=" + registrationClosedTime +
                 ", intent='" + intent + '\'' +
+                ", targetCourse='" + targetCourse + '\'' +
                 ", meetingPeriod='" + meetingPeriod + '\'' +
                 ", studentsRegistered=" + studentsRegistered +
                 '}';

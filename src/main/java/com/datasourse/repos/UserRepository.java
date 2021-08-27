@@ -16,6 +16,8 @@ import org.bson.codecs.configuration.CodecProvider;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 
+import java.util.List;
+
 import static com.mongodb.MongoClientSettings.getDefaultCodecRegistry;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
@@ -141,6 +143,53 @@ public class UserRepository implements CrudRepository<AppUser> {
         }
 
         return null;
+    }
+
+
+    public void updateCourseName(String oldName , String newName , String username) {
+        try {
+            MongoClient mongoClient = MongoClientFactory.getInstance().getConnection();
+
+            MongoDatabase registraiondb = mongoClient.getDatabase(DatabaseName);
+            MongoCollection<Document> UserCollection = registraiondb.getCollection(StudentCollectionName);
+            // find the user
+            Document queryDoc = new Document("username", username);
+            Document AuthDoc = UserCollection.find(queryDoc).first();
+
+            // check is user is null
+            System.out.println(AuthDoc);
+            if (AuthDoc == null) {
+                System.out.println("Failed to add course");
+                return;
+            }
+
+            List<String> currentCourses = (List<String>) AuthDoc.get("registeredClasses");
+            System.out.println(currentCourses);
+
+            if(currentCourses == null )
+            {
+                System.out.println("Null list");
+                return;
+            }
+
+
+            // if the course list contains the new course name then we will assume it is a duplicate
+            //if the course list does not contain the target course we will assume this is a mistake
+            if(currentCourses.contains(newName) || !currentCourses.contains(oldName))
+            {
+                System.out.println("Already Updated or old course is identical !");
+                return;
+            }
+
+            // remove class from students schedual
+            UserCollection.findOneAndUpdate(queryDoc, new Document("$pull", new Document("registeredClasses", oldName)));
+            //insert new name
+            UserCollection.findOneAndUpdate(queryDoc, new Document("$push", new Document("registeredClasses", newName)));
+
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
     public void RemoveUserFromClass(String username, String className)

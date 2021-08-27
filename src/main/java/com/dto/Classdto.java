@@ -13,8 +13,8 @@ public class Classdto {
     private String className;
     private int classSize;
     private boolean open = false;
-    private Date3 registrationTime;
-    private Date3 registrationClosedTime;
+    private String registrationTime;
+    private String registrationClosedTime;
     private String meetingPeriod;
     private List<String> studentsRegistered = new ArrayList<String>();
 

@@ -23,6 +23,33 @@ public class UserService {
         this.registrationCatalog = registrationCatalog;
     }
 
+    public void updateCourse( String oldCourseName , ClassDetails classDetails) throws InvalidRequestException
+        {
+            if(classDetails == null) { throw new InvalidRequestException("Null Data"); }
+
+            // aquiring student roster for given coursename
+            List<String> registeredStudents = registrationCatalog.FindAllStudentsInCourse(oldCourseName);
+                if(registeredStudents == null)
+                {
+                    throw new InvalidRequestException("Null Student List");
+                }
+            //remove class from each student on roster
+            for (String studentName : registeredStudents)
+            {
+                AppUser foundStudent = userRepo.findUserByFirstName(studentName);
+                if(foundStudent == null)
+                {
+                    throw new InvalidRequestException("couldnt Find Student");
+                }
+                //updateing course names
+                userRepo.updateCourseName(oldCourseName , classDetails.getClassName() , foundStudent.getUsername());
+            }
+
+
+           registrationCatalog.UpdateFull( oldCourseName, classDetails);
+
+        }
+
 
     public SheildedUser FindUserById(String id)
     {

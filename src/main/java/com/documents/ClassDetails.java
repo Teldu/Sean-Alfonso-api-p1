@@ -11,8 +11,8 @@ public class ClassDetails {
     private String className;
     private int classSize;
     private boolean open = false;
-    private Date3 registrationTime;
-    private Date3 registrationClosedTime;
+    private String registrationTime;
+    private String registrationClosedTime;
 
 
     private String meetingPeriod = "MWF";
@@ -21,18 +21,18 @@ public class ClassDetails {
 
     public ClassDetails() {super(); }
 
-    public ClassDetails(boolean open , Date3 registrationTime )
+    public ClassDetails(boolean open , String registrationTime )
     {
         this.open = open;
         this.registrationTime = registrationTime;
     }
 
-    public ClassDetails(int classSize, boolean open, Date3 registrationTime, String meetingPeriod) {
+    public ClassDetails(int classSize, boolean open, String registrationTime, String meetingPeriod) {
         new com.documents.ClassDetails(open , registrationTime);
         this.classSize = classSize;
         this.meetingPeriod = meetingPeriod;
     }
-    public ClassDetails(String className , int classSize, boolean open, Date3 registrationTime, String meetingPeriod) {
+    public ClassDetails(String className , int classSize, boolean open, String registrationTime, String meetingPeriod) {
         new com.documents.ClassDetails(open , registrationTime);
         this.classSize = classSize;
         this.meetingPeriod = meetingPeriod;
@@ -75,19 +75,19 @@ public class ClassDetails {
         this.open = open;
     }
 
-    public Date3 getRegistrationTime() {
+    public String getRegistrationTime() {
         return registrationTime;
     }
 
-    public void setRegistrationTime(Date3 registrationTime) {
+    public void setRegistrationTime(String registrationTime) {
         this.registrationTime = registrationTime;
     }
 
-    public Date3 getRegistrationClosedTime() {
+    public String getRegistrationClosedTime() {
         return registrationClosedTime;
     }
 
-    public void setRegistrationClosedTime(Date3 registrationClosedTime) {
+    public void setRegistrationClosedTime(String registrationClosedTime) {
         this.registrationClosedTime = registrationClosedTime;
     }
 
@@ -117,9 +117,9 @@ public class ClassDetails {
                 "className='" + className + '\'' +
                 ", classSize=" + classSize +
                 ", open=" + open +
-                ", registrationTime=" + registrationTime +
-                ", registrationClosedTime=" + registrationClosedTime +
-                ", meetingPeriod=" + meetingPeriod +
+                ", registrationTime='" + registrationTime + '\'' +
+                ", registrationClosedTime='" + registrationClosedTime + '\'' +
+                ", meetingPeriod='" + meetingPeriod + '\'' +
                 ", studentsRegistered=" + studentsRegistered +
                 '}';
     }

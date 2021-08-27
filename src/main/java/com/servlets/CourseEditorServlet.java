@@ -56,51 +56,46 @@ public class CourseEditorServlet extends HttpServlet {
             }else
             {
                 RegisterCourseRequest course = mapper.readValue(req.getInputStream() , RegisterCourseRequest.class);
-                System.out.println(course);
 
-//                String targetCourse = (String)req.getAttribute("targetCourse");
-//                String intent = (String)req.getAttribute("intent");
-//                String className = (String)req.getAttribute("className");
-//                int classSize = (Integer) req.getAttribute("classSize");
-//                boolean open = (boolean)req.getAttribute("open");
-//                Date3 registrationTime = (Date3) req.getAttribute("registrationDate");
-//                Date3 registrationClosedTime = (Date3)req.getAttribute("registrationCloseDate");
 
-                ClassDetails courseDetails = registrationCatalog.GetClassDetailsOf(course.getClassName());
+
+                    // get course from database , students should not be changed
+                ClassDetails courseDetails = registrationCatalog.GetClassDetailsOf(course.getTargetCourse());
                 if(courseDetails == null)
                 {
                     resp.sendError(500 , "null course");
                     return;
                 }
 
-                respWriter.write(courseDetails.toString());
+                //respWriter.write(courseDetails.toString());
                 switch(course.getIntent())
                 {
                         case "All":
                         case "all":
-//                            courseDetails.setClassName(className);
-//                            courseDetails.setClassSize(classSize);
-//                            courseDetails.setOpen(open);
-//                            courseDetails.setRegistrationTime(registrationTime);
-//                            courseDetails.setRegistrationClosedTime(registrationClosedTime);
-//                            registrationCatalog.UpdateFull(courseDetails);
-//                            respWriter.write(targetCourse + " Updated!");
+                            courseDetails.setClassName(course.getClassName());
+                            courseDetails.setClassSize(course.getClassSize());
+                            courseDetails.setOpen(course.isOpen());
+                            courseDetails.setRegistrationTime(course.getRegistrationTime());
+                            courseDetails.setRegistrationClosedTime(course.getRegistrationClosedTime());
+                            userService.updateCourse( course.getTargetCourse(), courseDetails);
+                            respWriter.write(courseDetails.getClassName() + " Updated!");
                             break;
                     case "Time":
                     case "time":
-//                        courseDetails.setRegistrationTime(registrationTime);
-//                        courseDetails.setRegistrationClosedTime(registrationClosedTime);
-//                        registrationCatalog.UpdateFull(courseDetails);
-//                        respWriter.write(targetCourse + " Updated!");
+                        courseDetails.setRegistrationTime(course.getRegistrationTime());
+                        courseDetails.setRegistrationClosedTime(course.getRegistrationClosedTime());
+
+                        registrationCatalog.UpdateFull(course.getTargetCourse(), courseDetails);
+                        respWriter.write(course.getClassName() + " Updated!");
                         break;
                     case "status":
-//                        courseDetails.setOpen(open);
-//                        registrationCatalog.UpdateFull(courseDetails);
-//                        String classStatus = (courseDetails.isOpen() == true) ? "open" : "closed";
-//                        respWriter.write(targetCourse + " is " + classStatus +" !");
+                        courseDetails.setOpen(course.isOpen());
+                        registrationCatalog.UpdateFull(course.getTargetCourse(), courseDetails);
+                        String classStatus = (courseDetails.isOpen() == true) ? "open" : "closed";
+                        respWriter.write(course.getClassName() + " is " + classStatus +" !");
                         break;
                     case "Delete":
-                        userService.RemoveClassFromCatalog(course.getClassName());
+                        userService.RemoveClassFromCatalog(course.getTargetCourse());
                         respWriter.write(course.getClassName() + " Removed!");
                         break;
 
