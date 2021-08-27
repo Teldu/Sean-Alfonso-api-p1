@@ -75,6 +75,7 @@ public class CourseServlet extends HttpServlet {
         Principal principal = (Principal) req.getAttribute("principal");
         if(principal == null)
         {
+
             //resp.sendRedirect("/auth");
             resp.setStatus(401);
             return ;
@@ -95,12 +96,12 @@ public class CourseServlet extends HttpServlet {
 
             PrintWriter respWriter = resp.getWriter();
             ClassDetails registerCourseRequest = mapper.readValue(req.getInputStream() , ClassDetails.class);
-            respWriter.write("<h1>" + registerCourseRequest.toString() + "</h1>");
+            respWriter.write(registerCourseRequest.toString());
 
             if(registerCourseRequest != null) {
              Classdto classD =  registrationCatalog.save(registerCourseRequest);
              String classInfo = mapper.writeValueAsString(classD);
-                respWriter.write("<h1>" + classInfo + "</h1>");
+
             }
         }catch (JsonProcessingException jpe)
         {
