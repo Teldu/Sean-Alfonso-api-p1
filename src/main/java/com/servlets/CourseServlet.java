@@ -100,7 +100,7 @@ public class CourseServlet extends HttpServlet {
 
             if(registerCourseRequest != null) {
              Classdto classD =  registrationCatalog.save(registerCourseRequest);
-             System.out.println(classD);
+             ///System.out.println(classD);
              String classInfo = mapper.writeValueAsString(classD);
 
              respWriter.write(classInfo);

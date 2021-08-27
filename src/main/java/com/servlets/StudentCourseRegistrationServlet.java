@@ -61,7 +61,8 @@ public class StudentCourseRegistrationServlet extends HttpServlet {
 
             PrintWriter respWriter = resp.getWriter();
             Request request = mapper.readValue(req.getInputStream() , Request.class);
-            respWriter.write(request.getRequest());
+            String requestJsonFrom = mapper.writeValueAsString(request);
+            respWriter.write(requestJsonFrom);
             System.out.println( request.getRequest() + " : Regestration Servlet");
 
             if(request == null)

@@ -78,25 +78,27 @@ public class CourseEditorServlet extends HttpServlet {
                             courseDetails.setRegistrationTime(course.getRegistrationTime());
                             courseDetails.setRegistrationClosedTime(course.getRegistrationClosedTime());
                             userService.updateCourse( course.getTargetCourse(), courseDetails);
-                            respWriter.write(courseDetails.getClassName() + " Updated!");
+                            String classInfo = mapper.writeValueAsString(course);
+                            respWriter.write(classInfo + " Updated!");
                             break;
                     case "Time":
                     case "time":
                         courseDetails.setRegistrationTime(course.getRegistrationTime());
                         courseDetails.setRegistrationClosedTime(course.getRegistrationClosedTime());
-
                         registrationCatalog.UpdateFull(course.getTargetCourse(), courseDetails);
-                        respWriter.write(course.getClassName() + " Updated!");
+                        String classInfo1 = mapper.writeValueAsString(course);
+                        respWriter.write(classInfo1 + " Updated!");
                         break;
                     case "status":
                         courseDetails.setOpen(course.isOpen());
                         registrationCatalog.UpdateFull(course.getTargetCourse(), courseDetails);
-                        String classStatus = (courseDetails.isOpen() == true) ? "open" : "closed";
-                        respWriter.write(course.getClassName() + " is " + classStatus +" !");
+                        String classInfo2 = mapper.writeValueAsString(course);
+                        respWriter.write(classInfo2 + " Updated!");
                         break;
                     case "Delete":
                         userService.RemoveClassFromCatalog(course.getTargetCourse());
-                        respWriter.write(course.getClassName() + " Removed!");
+                        String classInfo3 = mapper.writeValueAsString(course);
+                        respWriter.write(classInfo3 + " Updated!");
                         break;
 
                 }
