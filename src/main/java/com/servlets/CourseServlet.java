@@ -96,12 +96,14 @@ public class CourseServlet extends HttpServlet {
 
             PrintWriter respWriter = resp.getWriter();
             ClassDetails registerCourseRequest = mapper.readValue(req.getInputStream() , ClassDetails.class);
-            respWriter.write(registerCourseRequest.toString());
+
 
             if(registerCourseRequest != null) {
              Classdto classD =  registrationCatalog.save(registerCourseRequest);
+             System.out.println(classD);
              String classInfo = mapper.writeValueAsString(classD);
 
+             respWriter.write(classInfo);
             }
         }catch (JsonProcessingException jpe)
         {
