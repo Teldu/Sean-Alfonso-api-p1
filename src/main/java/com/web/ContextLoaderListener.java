@@ -1,5 +1,8 @@
 package com.web;
 
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.core.joran.spi.JoranException;
 import com.datasourse.repos.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.client.MongoClient;
@@ -10,12 +13,14 @@ import com.util.MongoClientFactory;
 import com.web.filters.AuthFilter;
 import com.web.security.JwtConfig;
 import com.web.security.TokenGenerator;
+import org.slf4j.LoggerFactory;
 
 
 import javax.servlet.DispatcherType;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import java.io.File;
 import java.util.EnumSet;
 
 public class ContextLoaderListener implements ServletContextListener {
@@ -50,7 +55,7 @@ public class ContextLoaderListener implements ServletContextListener {
             context.addServlet("StudentCourseRegistrationServlet", studentCourseRegistrationServlet).addMapping("/users/registration");
             context.addServlet("StudentCourseViewServlet", viewStudentCourseServlet).addMapping("/viewStudentCourse");
             context.addServlet("AuthServlet", authServlet).addMapping("/auth");
-
+            configureLogback(context);
         }catch (Exception e)
         {
             e.printStackTrace();
@@ -61,5 +66,24 @@ public class ContextLoaderListener implements ServletContextListener {
     public void contextDestroyed(ServletContextEvent sce) {
         MongoClientFactory.getInstance().cleanUp();
     }
+
+    private void configureLogback(ServletContext servletContext) {
+
+        LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
+        JoranConfigurator logbackConfig = new JoranConfigurator();
+        logbackConfig.setContext(loggerContext);
+        loggerContext.reset();
+
+        String logbackConfigFilePath = servletContext.getRealPath("") + File.separator + servletContext.getInitParameter("logback-config");
+
+        try {
+            logbackConfig.doConfigure(logbackConfigFilePath);
+        } catch (JoranException e) {
+            e.printStackTrace();
+            System.out.println("An unexpected exception occurred. Unable to configure Logback.");
+        }
+
+    }
+
 
 }

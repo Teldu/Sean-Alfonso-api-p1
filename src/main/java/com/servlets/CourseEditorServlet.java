@@ -91,11 +91,6 @@ public class CourseEditorServlet extends HttpServlet {
                         String classInfo2 = mapper.writeValueAsString(course);
                         respWriter.write(classInfo2 + " Updated!");
                         break;
-                    case "Delete":
-                        userService.RemoveClassFromCatalog(course.getTargetCourse());
-                        String classInfo3 = mapper.writeValueAsString(course);
-                        respWriter.write(classInfo3 + " Updated!");
-                        break;
 
                 }
 

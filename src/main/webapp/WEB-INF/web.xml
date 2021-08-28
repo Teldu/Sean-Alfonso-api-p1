@@ -10,6 +10,10 @@
     </welcome-file-list>
 
 
+    <context-param>
+        <param-name>logback-config</param-name>
+        <param-value>WEB-INF/logback.xml</param-value>
+    </context-param>
 
     <listener>
         <listener-class>com.web.ContextLoaderListener</listener-class>
