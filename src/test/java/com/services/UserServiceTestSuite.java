@@ -284,4 +284,18 @@ public class UserServiceTestSuite {
 
     }
 
+    @Test(expected = InvalidRequestException.class)
+    public void updateCourse_throwsException_whenGivenInvalidiput(){
+        //Arrange
+
+
+        //Act
+
+        sut.updateCourse("" , null);
+
+        //Assert
+        verify(mockUserRepo, times(0)).updateCourseName("classname" , "asfda" , "sdfsafd");
+
+    }
+
 }

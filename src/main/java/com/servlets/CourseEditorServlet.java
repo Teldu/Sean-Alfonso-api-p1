@@ -28,7 +28,7 @@ public class CourseEditorServlet extends HttpServlet {
     }
 
 
-
+    @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("application/json");
         Principal principal = (Principal) req.getAttribute("principal");

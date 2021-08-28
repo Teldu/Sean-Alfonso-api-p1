@@ -29,11 +29,12 @@ public class StudentCourseRegistrationServlet extends HttpServlet {
         this.userService = userService;
 
     }
+    @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
 
     }
-
+    @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("application/json");
         Principal principal = (Principal) req.getAttribute("principal");
