@@ -91,4 +91,18 @@ public class SheildedUser {
     public void setRegisteredClasses(List<String> registeredClasses) {
         this.registeredClasses = registeredClasses;
     }
+
+    @Override
+    public String toString() {
+        return "SheildedUser{" +
+                "_id='" + _id + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", username='" + username + '\'' +
+                ", type='" + type + '\'' +
+                ", registrationTime=" + registrationTime +
+                ", registeredClasses=" + registeredClasses +
+                '}';
+    }
 }

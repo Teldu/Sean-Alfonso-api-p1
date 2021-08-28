@@ -6,14 +6,14 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class Request {
     String name;
     String request;
-    String requesterCredentials;
+
 
 
     public Request(){}
     public Request(String name, String requesterName, String requesterCredentials) {
         this.name = name;
         this.request = requesterName;
-        this.requesterCredentials = requesterCredentials;
+
     }
 
 
@@ -33,11 +33,5 @@ public class Request {
         this.request = request;
     }
 
-    public String getRequesterCredentials() {
-        return requesterCredentials;
-    }
 
-    public void setRequesterCredentials(String requesterCredentials) {
-        this.requesterCredentials = requesterCredentials;
-    }
 }

@@ -58,7 +58,7 @@ public class StudentCourseRegistrationServlet extends HttpServlet {
 
 
             SheildedUser appUser  = userService.FindUserName(principal.getUsername());
-
+            System.out.println(appUser.toString());
             PrintWriter respWriter = resp.getWriter();
             Request request = mapper.readValue(req.getInputStream() , Request.class);
             String requestJsonFrom = mapper.writeValueAsString(request);
@@ -114,7 +114,7 @@ public class StudentCourseRegistrationServlet extends HttpServlet {
         }catch(Exception e)
         {
             e.printStackTrace();
-            resp.sendError(500 , "Error on Programmer");
+            resp.sendError(500 , e.toString());
         }
 
 

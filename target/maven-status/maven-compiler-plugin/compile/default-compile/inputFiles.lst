@@ -6,7 +6,6 @@ C:\Users\Alfonso Holmes\Revature Bank\Sean-Alfonso-api-p1\src\main\java\com\util
 C:\Users\Alfonso Holmes\Revature Bank\Sean-Alfonso-api-p1\src\main\java\com\util\exceptions\DataSourceException.java
 C:\Users\Alfonso Holmes\Revature Bank\Sean-Alfonso-api-p1\src\main\java\com\web\filters\AuthFilter.java
 C:\Users\Alfonso Holmes\Revature Bank\Sean-Alfonso-api-p1\src\main\java\com\documents\ClassDetails.java
-C:\Users\Alfonso Holmes\Revature Bank\Sean-Alfonso-api-p1\src\main\java\com\services\RegistrationCatalog.java
 C:\Users\Alfonso Holmes\Revature Bank\Sean-Alfonso-api-p1\src\main\java\com\servlets\StudentCourseRegistrationServlet.java
 C:\Users\Alfonso Holmes\Revature Bank\Sean-Alfonso-api-p1\src\main\java\com\servlets\ViewStudentCourseServlet.java
 C:\Users\Alfonso Holmes\Revature Bank\Sean-Alfonso-api-p1\src\main\java\com\datasourse\repos\CrudRepository.java
@@ -34,3 +33,4 @@ C:\Users\Alfonso Holmes\Revature Bank\Sean-Alfonso-api-p1\src\main\java\com\web\
 C:\Users\Alfonso Holmes\Revature Bank\Sean-Alfonso-api-p1\src\main\java\com\util\exceptions\ScreenNotFoundException.java
 C:\Users\Alfonso Holmes\Revature Bank\Sean-Alfonso-api-p1\src\main\java\com\documents\Date3.java
 C:\Users\Alfonso Holmes\Revature Bank\Sean-Alfonso-api-p1\src\main\java\com\dto\Principal.java
+C:\Users\Alfonso Holmes\Revature Bank\Sean-Alfonso-api-p1\src\main\java\com\datasourse\repos\RegistrationCatalog.java
