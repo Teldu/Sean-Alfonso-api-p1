@@ -1,25 +1,20 @@
 package com.servlets;
 
-import com.documents.AppUser;
 import com.documents.Authorization;
 import com.documents.ClassDetails;
-import com.dto.Credentials;
 import com.dto.Principal;
-import com.dto.Request;
+import com.dto.RequestObjects.Request;
 import com.dto.SheildedUser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.services.UserService;
 import com.util.exceptions.DataSourceException;
 import com.util.exceptions.InvalidRequestException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -89,7 +84,7 @@ public class StudentCourseRegistrationServlet extends HttpServlet {
                 ClassDetails tempClass = userService.getClassDetailsOf(request.getName());
                 if(tempClass.getStudentsRegistered().contains(appUser.getFirstName()))
                 {
-                    resp.sendError(404 , "Already Registered For Class");
+                    resp.sendError(400 , "Already Registered For Class");
                     return;
                 }
                 userService.AddClass( request.getName() , appUser.getFirstName(), appUser.getUsername());

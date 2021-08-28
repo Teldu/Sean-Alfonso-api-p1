@@ -1,7 +1,9 @@
 package com.servlets;
 
+import com.documents.Authorization;
 import com.documents.ClassDetails;
 import com.dto.Classdto;
+import com.dto.RequestObjects.DeleteRequest;
 import com.dto.Principal;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -122,7 +124,40 @@ public class CourseServlet extends HttpServlet {
             return;
         }
 
+    }
 
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.setContentType("application/json");
+        Principal principal = (Principal) req.getAttribute("principal");
+        PrintWriter respWriter = resp.getWriter();
 
+        if(principal == null)
+        {
+            resp.setStatus(401);
+            return;
+        }
+
+        String status = principal.getType();
+        try{
+            if(status == Authorization.NONE.toString() || status == null)
+            {
+                resp.setStatus(404);
+                return;
+            }else if (status == Authorization.STUDENT.toString()){
+
+                resp.sendError(404 , "Unauthorized command");
+            }else
+            {
+                DeleteRequest course = mapper.readValue(req.getInputStream() , DeleteRequest.class);
+                System.out.println(course.toString());
+                userService.RemoveClassFromCatalog(course.getClassName());
+                String classInfo3 = mapper.writeValueAsString(course);
+                respWriter.write(classInfo3 + " Remove!");
+            }
+
+        }catch(Exception e)
+        {
+
+        }
     }
 }

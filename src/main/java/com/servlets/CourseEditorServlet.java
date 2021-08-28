@@ -3,7 +3,7 @@ package com.servlets;
 import com.documents.Authorization;
 import com.documents.ClassDetails;
 import com.dto.Principal;
-import com.dto.RegisterCourseRequest;
+import com.dto.RequestObjects.RegisterCourseRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.datasourse.repos.RegistrationCatalog;
 import com.services.UserService;
@@ -28,40 +28,7 @@ public class CourseEditorServlet extends HttpServlet {
     }
 
 
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setContentType("application/json");
-        Principal principal = (Principal) req.getAttribute("principal");
-        PrintWriter respWriter = resp.getWriter();
 
-        if(principal == null)
-        {
-            resp.setStatus(401);
-            return;
-        }
-
-        String status = principal.getType();
-        try{
-            if(status == Authorization.NONE.toString() || status == null)
-            {
-                resp.setStatus(404);
-                return;
-            }else if (status == Authorization.STUDENT.toString()){
-
-                resp.sendError(404 , "Unauthorized command");
-            }else
-            {
-                RegisterCourseRequest course = mapper.readValue(req.getInputStream() , RegisterCourseRequest.class);
-
-                        userService.RemoveClassFromCatalog(course.getTargetCourse());
-                        String classInfo3 = mapper.writeValueAsString(course);
-                        respWriter.write(classInfo3 + " Updated!");
-            }
-
-        }catch(Exception e)
-        {
-
-        }
-    }
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("application/json");
         Principal principal = (Principal) req.getAttribute("principal");
