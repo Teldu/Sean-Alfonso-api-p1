@@ -9,6 +9,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.datasourse.repos.RegistrationCatalog;
 import com.services.UserService;
+import com.util.DateParser;
 import com.util.exceptions.InvalidRequestException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -44,7 +45,7 @@ public class CourseServlet extends HttpServlet {
             return;
         }
 
-        String courseName = req.getParameter("coursename");
+        String courseName = req.getParameter("className");
 
         try{
             if(courseName == null || courseName.isEmpty())//TODO Students shoudn't see all registered students : Admin Can see the all Registered Students
@@ -52,6 +53,7 @@ public class CourseServlet extends HttpServlet {
                 List<ClassDetails> allClassDetails = registrationCatalog.showClasses();
                 System.out.println(allClassDetails);
                 respWriter.write(mapper.writeValueAsString(allClassDetails));
+
             }else   {
                 ClassDetails registerCourseRequest = registrationCatalog.GetClassDetailsOf(courseName);
                 System.out.println(registerCourseRequest);
@@ -71,6 +73,7 @@ public class CourseServlet extends HttpServlet {
         }
     }
 
+    //add class
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("application/json");
@@ -98,7 +101,7 @@ public class CourseServlet extends HttpServlet {
 
             PrintWriter respWriter = resp.getWriter();
             ClassDetails registerCourseRequest = mapper.readValue(req.getInputStream() , ClassDetails.class);
-
+            registerCourseRequest.setOpen(new DateParser().htmlWindow(registerCourseRequest.getRegistrationTime() , registerCourseRequest.getRegistrationClosedTime()));
 
             if(registerCourseRequest != null) {
              Classdto classD =  registrationCatalog.save(registerCourseRequest);

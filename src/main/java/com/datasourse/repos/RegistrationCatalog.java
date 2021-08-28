@@ -26,29 +26,25 @@ import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 public class RegistrationCatalog implements CrudRepository<Classdto> {
 
    // private final Logger logger = LogManager.getLogger(StudentDashboard.class);
-    private String className;
-    private int classSize;
-    private List<String> students;
+
     private ObjectMapper mapper = new ObjectMapper();
     String DatabaseName = "SchoolDatabase";
     String CourseCollectionName = "Courses";
     CodecProvider pojoCodecProvider = PojoCodecProvider.builder().automatic(true).build();
     CodecRegistry pojoCodecRegistry = fromRegistries(getDefaultCodecRegistry(), fromProviders(pojoCodecProvider));
     public RegistrationCatalog(String className, int classSize){
-        this.className = className;
-        this.classSize = classSize;
+
     }
 
     public RegistrationCatalog(String className, String students){
-        this.className = className;
-        this.students.add(students);
+
     }
     public RegistrationCatalog(){
         super();
     }
 
     public RegistrationCatalog(String className){
-        this.className = className;
+
     }
 
 
@@ -358,26 +354,28 @@ public class RegistrationCatalog implements CrudRepository<Classdto> {
 
             ObjectMapper mapper = new ObjectMapper();
             //iterate through all collections in class DB and convert the documents to class detail pojos
+            System.out.println("#####################################################################");
             for (Document classDoc : listOfDocs) {
-                // grab all relavant data to ClassDetail pojo
-                Object classSize = classDoc.get("classSize");
-                System.out.println(classSize);
+                //using the class name to get the document from the database
                 Object classname = classDoc.get("className");
-                Object classStatus = classDoc.get("open");
-                Object registrationTime = classDoc.get("registrationTime");
-                Object meetingPeriod = classDoc.get("meetingPeriod");
-                Object studentsRegistered = classDoc.get("studentsRegistered");
-                // create pojo
-                ClassDetails registerCourseRequest = new ClassDetails((String) classname  , (int)classSize, (boolean)classStatus ,(String) registrationTime , (String) meetingPeriod);
-                registerCourseRequest.setStudentsRegistered((List<String>) studentsRegistered);
-
-                if(registerCourseRequest == null)
+                Document AuthDoc = courseCollection.find(classDoc).first();
+                System.out.println(" AuthDoc :" + AuthDoc + "\n");
+                // mapping ducment into a ClassDetails pojo
+                ClassDetails classDetails = mapper.readValue(AuthDoc.toJson() , ClassDetails.class);
+                System.out.println(" ClassDetails :"+ classDetails + "\n");
+                if(classDetails == null)
+                {
+                    System.out.println(classDetails);
+                    throw new InvalidRequestException(" null");
+                }
+                if(classDetails == null)
                 {
                     throw new InvalidRequestException("element list cannot be created : null");
                 }
                 // add pojo to list to then forward to servlet
-                 outClassList.add(registerCourseRequest);
+                 outClassList.add(classDetails);
             }
+            System.out.println("#####################################################################");
 
             return outClassList;
 
@@ -415,48 +413,29 @@ public class RegistrationCatalog implements CrudRepository<Classdto> {
         return newUser;
     }
 
-    public boolean currentlyRegistered(RegistrationCatalog newUser, boolean reg, String className){
-        try {
-            MongoClient mongoClient = MongoClientFactory.getInstance().getConnection();
-
-            MongoDatabase classDb = mongoClient.getDatabase(DatabaseName);
-            MongoCollection<Document> usersCollection = classDb.getCollection(className);
-
-            FindIterable<Document> iterDoc = usersCollection.find();
-            Iterator it = iterDoc.iterator();
-            while (it.hasNext()) {
-                String stNames = it.next().toString().substring(49);
-                stNames = stNames.substring(0, stNames.length() - 2);
-                if(stNames.equals(newUser.getClassName())){
-                    reg = true;
-                }
-            }
-            //same basic process as showRoster, but instead of printing all student names, finds if
-            //provided student name matches any inside collection, and returns true if it does
-
-        } catch (Exception e) {
-           // logger.error(e.getMessage());
-            throw new DataSourceException("An unexpected exception occurred.", e);
-        }
-        return reg;
-    }
 
     public ClassDetails GetClassDetailsOf(String className)
     {
 
         try{
             MongoClient mongoClient = MongoClientFactory.getInstance().getConnection();
-            MongoDatabase registraiondb = mongoClient.getDatabase(DatabaseName).withCodecRegistry(pojoCodecRegistry);
-            MongoCollection<ClassDetails> courseCollection = registraiondb.getCollection("Courses", ClassDetails.class);
+            MongoDatabase classDb = mongoClient.getDatabase(DatabaseName);
+            MongoCollection<Document> courseCollection = classDb.getCollection("Courses");
             Document queryDoc = new Document("className", className);
-            ClassDetails targetCourse = courseCollection.find(queryDoc).first();
+           Document authDoc = courseCollection.find(queryDoc).first();
+           if(authDoc == null)
+           {
+               throw new InvalidRequestException("authdoc null");
+           }
+            ObjectMapper mapper = new ObjectMapper();
+            ClassDetails targetCourse = mapper.readValue(authDoc.toJson() , ClassDetails.class);
 
 
             return targetCourse;
 
         }catch (Exception e)
         {
-            e.printStackTrace();
+
         }
 
         return null;
@@ -484,44 +463,7 @@ public class RegistrationCatalog implements CrudRepository<Classdto> {
 
     }
 
-    public boolean register(RegistrationCatalog newUser, String classname) {
 
-        try {
-            MongoClient mongoClient = MongoClientFactory.getInstance().getConnection();
-
-            MongoDatabase classDb = mongoClient.getDatabase(DatabaseName);
-            boolean collExists = false;
-            //used to check if a class already exists. does not register student if it does not
-            for (final String name : classDb.listCollectionNames()) {
-                if (name.equalsIgnoreCase(classname)) {
-                    //if provided class name matches a collection in DB, then it exists
-                    collExists = true;
-                }else{
-                    return false;
-                }
-            }
-
-            if(collExists){
-                try{
-                    //class exists: add student to class
-
-                    MongoCollection<Document> usersCollection = classDb.getCollection(classname);
-                    Document newUserDoc = new Document("Students", newUser.getClassName());
-                    usersCollection.insertOne(newUserDoc);
-                }catch (Exception e){
-                 //   logger.error(e.getMessage());
-                    System.out.println("Student already registered");
-                }
-
-            }
-
-            return true;
-
-        } catch (Exception e) {
-           // logger.error(e.getMessage());
-            throw new DataSourceException("An unexpected exception occurred.", e);
-        }
-    }
     public boolean register(String newUser, String classname) {
 
         try {
@@ -561,46 +503,6 @@ public class RegistrationCatalog implements CrudRepository<Classdto> {
         }
     }
 
-    public RegistrationCatalog withdraw(RegistrationCatalog newUser, String className){
-        try {
-            MongoClient mongoClient = MongoClientFactory.getInstance().getConnection();
 
-            MongoDatabase classDb = mongoClient.getDatabase(DatabaseName);
-            MongoCollection<Document> usersCollection = classDb.getCollection(className);
-            Document newUserDoc = new Document("Students", newUser.getClassName());
 
-            usersCollection.deleteOne(newUserDoc); //removes provided class name from DB (deletes collection)
-            //nothing happens if provided class does not exist in database
-
-            return newUser;
-
-        } catch (Exception e) {
-            //logger.error(e.getMessage());
-            throw new DataSourceException("An unexpected exception occurred.", e);
-        }
-    }
-
-    public String getClassName() {
-        return className;
-    }
-
-    public void setClassName(String className) {
-        this.className = className;
-    }
-
-    public int getClassSize() {
-        return classSize;
-    }
-
-    public List<String> getStudents() {
-        return students;
-    }
-
-    public void setStudents(List<String> students) {
-        this.students = students;
-    }
-
-    public void setClassSize(int classSize) {
-        this.classSize = classSize;
-    }
 }

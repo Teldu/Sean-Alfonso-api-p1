@@ -55,7 +55,7 @@ public class ContextLoaderListener implements ServletContextListener {
             context.addServlet("StudentCourseRegistrationServlet", studentCourseRegistrationServlet).addMapping("/users/registration");
             context.addServlet("StudentCourseViewServlet", viewStudentCourseServlet).addMapping("/viewStudentCourse");
             context.addServlet("AuthServlet", authServlet).addMapping("/auth");
-            configureLogback(context);
+            //configureLogback(context);
         }catch (Exception e)
         {
             e.printStackTrace();
