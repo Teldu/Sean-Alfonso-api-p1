@@ -54,10 +54,15 @@ public class UserService {
 
     public SheildedUser FindUserById(String id)
     {
+        if(id == null)
+        {
+            throw new InvalidRequestException("null data");
+        }
+
         return new SheildedUser(userRepo.findById(id));
     }
 
-    public SheildedUser FindUserName(String username) throws InvalidRequestException
+    public SheildedUser FindUserName(String username)
     {
         if(username == null)
         {
@@ -120,6 +125,7 @@ public class UserService {
         return userRepo.saveAdmin(newUser);
     }
 
+    //tested
     public AppUser login(String username, String password) {
 
         if (username == null || username.trim().equals("") || password == null || password.trim().equals("")) {
@@ -132,17 +138,21 @@ public class UserService {
             throw new AuthenticationException("Invalid credentials provided!");
         }
 
-
-
         return authUser;
 
     }
 
+    // tested
     public ClassDetails getClassDetailsOf(String courseName)
     {
+        if(courseName == null || courseName.isEmpty())
+        {
+            throw new InvalidRequestException("Class name is null");
+        }
        return registrationCatalog.GetClassDetailsOf(courseName);
     }
 
+    //tested
     public void AddClass(String courseName , String addedStudent, String username) {
 
         ClassDetails classDetails = registrationCatalog.GetClassDetailsOf(courseName);
@@ -173,7 +183,7 @@ public class UserService {
         registrationCatalog.AddStudentToCourse(courseName, addedStudent);
         userRepo.AddUserToClass(username , courseName);
     }
-
+    //tested
     public void DropClass(String courseName , String dropedStudent , String username)  {
         if(courseName == null || dropedStudent == null || username == null)
         {
@@ -183,6 +193,8 @@ public class UserService {
        userRepo.RemoveUserFromClass(username , courseName);
        registrationCatalog.RemoveStudentFromCourse(courseName, dropedStudent);
     }
+
+    //tested
     public boolean isUserValid(AppUser user) {
         if (user == null) return false;
         if (user.getFirstName() == null || user.getFirstName().trim().equals("")) return false;
