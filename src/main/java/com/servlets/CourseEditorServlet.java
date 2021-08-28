@@ -1,14 +1,12 @@
 package com.servlets;
 
-import com.documents.AppUser;
 import com.documents.Authorization;
 import com.documents.ClassDetails;
 import com.dto.Principal;
 import com.dto.RegisterCourseRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.services.RegistrationCatalog;
+import com.datasourse.repos.RegistrationCatalog;
 import com.services.UserService;
-import com.documents.Date3;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

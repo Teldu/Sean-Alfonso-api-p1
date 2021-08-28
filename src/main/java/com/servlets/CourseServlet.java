@@ -5,7 +5,7 @@ import com.dto.Classdto;
 import com.dto.Principal;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.services.RegistrationCatalog;
+import com.datasourse.repos.RegistrationCatalog;
 import com.services.UserService;
 import com.util.exceptions.InvalidRequestException;
 import org.apache.logging.log4j.LogManager;

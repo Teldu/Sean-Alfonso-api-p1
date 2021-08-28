@@ -1,5 +1,6 @@
 package com.services;
 
+import com.datasourse.repos.RegistrationCatalog;
 import com.documents.AppUser;
 import com.datasourse.repos.UserRepository;
 
@@ -10,9 +11,7 @@ import com.util.exceptions.AuthenticationException;
 import com.util.exceptions.InvalidRequestException;
 import com.util.exceptions.ResourcePersistenceException;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.zip.DataFormatException;
 
 public class UserService {
 
@@ -144,26 +143,21 @@ public class UserService {
        return registrationCatalog.GetClassDetailsOf(courseName);
     }
 
-    public void AddClass(String courseName , String addedStudent, String username) throws DataFormatException , InvalidRequestException{
+    public void AddClass(String courseName , String addedStudent, String username) {
 
         ClassDetails classDetails = registrationCatalog.GetClassDetailsOf(courseName);
-        if(courseName == null || addedStudent == null || username == null || registrationCatalog.GetClassDetailsOf(courseName) == null)
-        {
-            throw new DataFormatException("Provided Information is Invalid");
-        }
 
-        if(classDetails.isOpen() == false)
-        {
-                throw new InvalidRequestException("Cannot Register for CLOSED Course");
+        if(courseName == null || addedStudent == null || username == null || registrationCatalog.GetClassDetailsOf(courseName) == null) { throw new InvalidRequestException("Provided Information is Invalid"); }
+        if(classDetails.isOpen() == false) {
+            System.out.println("Cannot Register for CLOSED Course");
+            return;
         }
-
-        if(classDetails.getStudentsRegistered().size() >= classDetails.getClassSize())
-        {
-            throw new InvalidRequestException("Class is full");
+        if(classDetails.getStudentsRegistered().size() >= classDetails.getClassSize()) {
+            System.out.println("Class is full");
+            return;
         }
-
         //if in window
-        if(dateParser.Window(classDetails.getRegistrationTime(), classDetails.getRegistrationClosedTime()))
+        if(dateParser.htmlWindow(classDetails.getRegistrationTime(), classDetails.getRegistrationClosedTime()))
         {
             classDetails.setOpen(true);
             registrationCatalog.UpdateFull(classDetails.getClassName(), classDetails);
@@ -180,10 +174,10 @@ public class UserService {
         userRepo.AddUserToClass(username , courseName);
     }
 
-    public void DropClass(String courseName , String dropedStudent , String username) throws DataFormatException {
+    public void DropClass(String courseName , String dropedStudent , String username)  {
         if(courseName == null || dropedStudent == null || username == null)
         {
-            throw new DataFormatException("Provided Information is Invalid");
+            throw new InvalidRequestException("Provided Information is Invalid");
         }
 
        userRepo.RemoveUserFromClass(username , courseName);

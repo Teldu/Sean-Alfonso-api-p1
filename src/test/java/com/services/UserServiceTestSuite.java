@@ -1,5 +1,6 @@
 package com.services;
 
+import com.datasourse.repos.RegistrationCatalog;
 import com.documents.AppUser;
 import com.datasourse.repos.UserRepository;
 
@@ -131,6 +132,44 @@ public class UserServiceTestSuite {
         //Assert
 
 
+    }
+
+    @Test(expected = InvalidRequestException.class)
+    public void AddCourse_ThrowsInvalidRequestExceptionException_ifinputsareNull(){
+        //Arrange
+
+
+
+        //Act
+        sut.AddClass(null, "Jeff" , "Geof");
+        sut.AddClass("null", null , "Geof");
+        sut.AddClass("null", "Jeff" , null);
+
+
+        //Assert
+       verify(mockUserRepo , times(0)).AddUserToClass("  " , " ");
+       verify(mockClassRepo , times(0)).AddStudentToCourse(" "  , "");
+    }
+
+
+
+
+
+    @Test(expected = InvalidRequestException.class)
+    public void DropCourse_ThrowsInvalidRequestExceptionException_ifinputsareNull(){
+        //Arrange
+
+
+
+        //Act
+        sut.DropClass(null, "Jeff" , "Geof");
+        sut.DropClass("null", null , "Geof");
+        sut.DropClass("null", "Jeff" , null);
+
+
+        //Assert
+        verify(mockUserRepo , times(0)).RemoveUserFromClass("  " , " ");
+        verify(mockClassRepo , times(0)).RemoveStudentFromCourse(" "  , "");
     }
 
 }

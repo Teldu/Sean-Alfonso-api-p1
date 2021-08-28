@@ -67,13 +67,13 @@ public class StudentCourseRegistrationServlet extends HttpServlet {
 
             if(request == null)
             {
-                resp.setStatus(400);
+                resp.sendError(400 , "request null");
                 return;
             }
 
             if( appUser == null)
             {
-                resp.setStatus(500);
+                resp.sendError(400 , "appUser null");
                 return;
             }
 

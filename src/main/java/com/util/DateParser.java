@@ -65,7 +65,53 @@ public class DateParser {
             return false;
 
     }
+    /**
+     * takes in html Dates (yyyy-mm-dd)
+     * creates time window and returns true if the current date is in the created window
+     * window opening must be first
+     * @param inDate
+     * @param inDate2
+     * @return
+     */
+    public boolean htmlWindow(String inDate , String inDate2)
+    {
+        LocalDateTime currentTime = LocalDateTime.now();
+        // current date value to compare with margins
+        int monthValue = currentTime.getMonthValue();
+        int dayOfMonth = currentTime.getDayOfMonth();
+        int currentTimeYear = currentTime.getYear(); // obvioulsy in our case this will be 2021 but fo the sake of scalability we used getter
 
+        // split in String to create margin 1
+        String[] rawTime = inDate.split("-");
+        // split in String to create margin 2
+        String[] rawClosedTime = inDate2.split("-");
+
+        //margin 1
+        int inDateMonth = Integer.parseInt(rawTime[1]);
+        int inDateDay = Integer.parseInt(rawTime[2]);
+        int inDateYear = Integer.parseInt(rawTime[0]);
+        // margin 2
+        int inDate2Month = Integer.parseInt(rawClosedTime[1]);
+        int inDate2Day = Integer.parseInt(rawClosedTime[2]);
+        int inDate2Year = Integer.parseInt(rawClosedTime[0]);
+
+        // checking if months are value equivalent , if so checking which day is later
+        if((inDateMonth == monthValue && inDateDay <= dayOfMonth) || (inDateMonth < monthValue))
+        {
+            // // checking if months are value equivalent , if so checking which day is earlier
+            if( (monthValue == inDate2Month && inDate2Day >= dayOfMonth) || (monthValue > inDate2Month) )
+            {
+                return true;
+            }else{
+
+                return false;
+
+            }
+
+        }
+        return false;
+
+    }
     public int getMonth() {
         return month;
     }

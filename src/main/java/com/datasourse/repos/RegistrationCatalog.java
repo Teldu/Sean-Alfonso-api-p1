@@ -1,13 +1,10 @@
-package com.services;
-import com.datasourse.repos.CrudRepository;
-import com.documents.ClassDetails;
+package com.datasourse.repos;
 import com.documents.ClassDetails;
 import com.dto.Classdto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.client.*;
 
 
-import com.documents.Date3;
 import com.util.MongoClientFactory;
 import com.util.exceptions.DataSourceException;
 import com.util.exceptions.InvalidRequestException;

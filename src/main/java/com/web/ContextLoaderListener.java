@@ -3,7 +3,7 @@ package com.web;
 import com.datasourse.repos.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.client.MongoClient;
-import com.services.RegistrationCatalog;
+import com.datasourse.repos.RegistrationCatalog;
 import com.services.UserService;
 import com.servlets.*;
 import com.util.MongoClientFactory;
