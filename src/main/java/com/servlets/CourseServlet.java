@@ -5,6 +5,7 @@ import com.documents.ClassDetails;
 import com.dto.Classdto;
 import com.dto.RequestObjects.DeleteRequest;
 import com.dto.Principal;
+import com.dto.RequestObjects.Request;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.datasourse.repos.RegistrationCatalog;
@@ -45,17 +46,17 @@ public class CourseServlet extends HttpServlet {
             return;
         }
 
-        String courseName = req.getParameter("className");
+        DeleteRequest courseName =  mapper.readValue(req.getInputStream() , DeleteRequest.class);
 
         try{
-            if(courseName == null || courseName.isEmpty())//TODO Students shoudn't see all registered students : Admin Can see the all Registered Students
+            if(courseName == null || courseName.getClassName().isEmpty())//TODO Students shoudn't see all registered students : Admin Can see the all Registered Students
             {
                 List<ClassDetails> allClassDetails = registrationCatalog.showClasses();
                 System.out.println(allClassDetails);
                 respWriter.write(mapper.writeValueAsString(allClassDetails));
 
             }else   {
-                ClassDetails registerCourseRequest = registrationCatalog.GetClassDetailsOf(courseName);
+                ClassDetails registerCourseRequest = registrationCatalog.GetClassDetailsOf(courseName.getClassName());
                 System.out.println(registerCourseRequest);
                 respWriter.write(mapper.writeValueAsString(registerCourseRequest));
             }
