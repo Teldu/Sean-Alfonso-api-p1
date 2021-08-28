@@ -67,13 +67,13 @@ public class StudentCourseRegistrationServlet extends HttpServlet {
 
             if(request == null)
             {
-                resp.sendError(400 , "request null");
+                resp.sendError(401 , "request null");
                 return;
             }
 
             if( appUser == null)
             {
-                resp.sendError(400 , "appUser null");
+                resp.sendError(402 , "appUser null");
                 return;
             }
 
@@ -89,7 +89,7 @@ public class StudentCourseRegistrationServlet extends HttpServlet {
                 ClassDetails tempClass = userService.getClassDetailsOf(request.getName());
                 if(tempClass.getStudentsRegistered().contains(appUser.getFirstName()))
                 {
-                    resp.sendError(400 , "Already Registered For Class");
+                    resp.sendError(404 , "Already Registered For Class");
                     return;
                 }
                 userService.AddClass( request.getName() , appUser.getFirstName(), appUser.getUsername());
@@ -104,7 +104,7 @@ public class StudentCourseRegistrationServlet extends HttpServlet {
             resp.setStatus(301);
         }catch(DataSourceException e)
         {
-            resp.sendError(400 , "file data ");
+            resp.sendError(401 , "file data ");
         } catch(JsonProcessingException e)
         {
             resp.sendError(500 , "Error on Json");
