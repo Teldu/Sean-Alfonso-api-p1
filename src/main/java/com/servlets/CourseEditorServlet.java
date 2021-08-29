@@ -84,6 +84,7 @@ public class CourseEditorServlet extends HttpServlet {
                             courseDetails.setOpen(course.isOpen());
                             courseDetails.setRegistrationTime(course.getRegistrationTime());
                             courseDetails.setRegistrationClosedTime(course.getRegistrationClosedTime());
+                            courseDetails.setMeetingPeriod(course.getMeetingPeriod());
                             userService.updateCourse( course.getTargetCourse(), courseDetails);
                             String classInfo = mapper.writeValueAsString(course);
                             respWriter.write(classInfo + " Updated!");
