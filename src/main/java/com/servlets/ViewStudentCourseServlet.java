@@ -1,5 +1,6 @@
 package com.servlets;
 
+import com.dto.ErrorResponse;
 import com.dto.Principal;
 import com.dto.RequestObjects.DeleteRequest;
 import com.dto.SheildedUser;
@@ -7,7 +8,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.services.UserService;
 import com.util.exceptions.InvalidRequestException;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -19,7 +21,7 @@ import java.io.PrintWriter;
 public class ViewStudentCourseServlet extends HttpServlet {
     private final UserService userService;
     private final ObjectMapper mapper;
-    private final Logger logger = LogManager.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(ViewStudentCourseServlet.class);
 
     public ViewStudentCourseServlet(UserService userService , ObjectMapper mapper) {
         this.mapper = mapper;
@@ -55,12 +57,15 @@ public class ViewStudentCourseServlet extends HttpServlet {
         }   catch(InvalidRequestException e)
         {
 
-            resp.sendError(500 , "action cannot be completed");
+            ErrorResponse errResp = new ErrorResponse(500, "Server error");
+            respWriter.write(mapper.writeValueAsString(errResp));
             return;
         }
         catch(Exception e)
         {
-            resp.sendError(500 , "action cannot be completed on behaf of developer");
+            logger.error(e.getMessage());
+            ErrorResponse errResp = new ErrorResponse(500, "Server error");
+            respWriter.write(mapper.writeValueAsString(errResp));
             return;
         }
     }

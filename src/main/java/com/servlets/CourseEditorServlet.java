@@ -2,11 +2,15 @@ package com.servlets;
 
 import com.documents.Authorization;
 import com.documents.ClassDetails;
+import com.dto.ErrorResponse;
 import com.dto.Principal;
 import com.dto.RequestObjects.RegisterCourseRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.datasourse.repos.RegistrationCatalog;
 import com.services.UserService;
+import org.apache.logging.log4j.LogManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -16,6 +20,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 public class CourseEditorServlet extends HttpServlet {
+    private final Logger logger = LoggerFactory.getLogger(CourseEditorServlet.class);
     private final RegistrationCatalog registrationCatalog;
     private final UserService userService;
     private final ObjectMapper mapper;
@@ -36,7 +41,10 @@ public class CourseEditorServlet extends HttpServlet {
 
         if(principal == null)
         {
+
             resp.setStatus(401);
+            ErrorResponse errResp = new ErrorResponse(401, "session invalid");
+            respWriter.write(mapper.writeValueAsString(errResp));
             return;
         }
 
@@ -44,11 +52,13 @@ public class CourseEditorServlet extends HttpServlet {
         try{
             if(status == Authorization.NONE.toString() || status == null)
             {
-                resp.setStatus(404);
+                resp.setStatus(403);
+                ErrorResponse errResp = new ErrorResponse(500, "Unautorized command");
+                respWriter.write(mapper.writeValueAsString(errResp));
                 return;
             }else if (status == Authorization.STUDENT.toString()){
-
-                resp.sendError(404 , "Unauthorized command");
+                ErrorResponse errResp = new ErrorResponse(404 , "Unauthorized command");
+                respWriter.write(mapper.writeValueAsString(errResp));
             }else
             {
                 RegisterCourseRequest course = mapper.readValue(req.getInputStream() , RegisterCourseRequest.class);
@@ -59,7 +69,8 @@ public class CourseEditorServlet extends HttpServlet {
                 ClassDetails courseDetails = registrationCatalog.GetClassDetailsOf(course.getTargetCourse());
                 if(courseDetails == null)
                 {
-                    resp.sendError(500 , "null course");
+                    ErrorResponse errResp = new ErrorResponse(500 , "null course");
+                    respWriter.write(mapper.writeValueAsString(errResp));
                     return;
                 }
 
@@ -98,7 +109,7 @@ public class CourseEditorServlet extends HttpServlet {
 
         }catch(Exception e)
         {
-
+            logger.error(e.getMessage());
         }
     }
 

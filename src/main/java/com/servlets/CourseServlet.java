@@ -3,6 +3,7 @@ package com.servlets;
 import com.documents.Authorization;
 import com.documents.ClassDetails;
 import com.dto.Classdto;
+import com.dto.ErrorResponse;
 import com.dto.RequestObjects.DeleteRequest;
 import com.dto.Principal;
 import com.dto.RequestObjects.Request;
@@ -13,7 +14,8 @@ import com.services.UserService;
 import com.util.DateParser;
 import com.util.exceptions.InvalidRequestException;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -27,7 +29,7 @@ public class CourseServlet extends HttpServlet {
     private final RegistrationCatalog registrationCatalog;
     private final UserService userService;
     private final ObjectMapper mapper;
-    private final Logger logger = LogManager.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(CourseServlet.class);
 
     public CourseServlet(RegistrationCatalog registrationCatalog , UserService userService , ObjectMapper objectMapper)
     {
@@ -63,13 +65,17 @@ public class CourseServlet extends HttpServlet {
 
         }   catch(InvalidRequestException e)
         {
-
-            resp.sendError(500 , "Invalid Request");
+            logger.error(e.getMessage());
+            ErrorResponse errResp = new ErrorResponse(500 , "Invalid Request");
+            respWriter.write(mapper.writeValueAsString(errResp));
             return;
         }
         catch(Exception e)
         {
-            resp.sendError(500 , "action cannot be completed");
+            logger.error(e.getMessage());
+            ErrorResponse errResp = new ErrorResponse(500 , "action cannot be completed");
+            respWriter.write(mapper.writeValueAsString(errResp));
+
             return;
         }
     }
@@ -78,12 +84,14 @@ public class CourseServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("application/json");
+        try{
         Principal principal = (Principal) req.getAttribute("principal");
+        PrintWriter respWriter = resp.getWriter();
         if(principal == null)
         {
 
-            //resp.sendRedirect("/auth");
-            resp.setStatus(401);
+            ErrorResponse errResp = new ErrorResponse(401, "null session");
+            respWriter.write(mapper.writeValueAsString(errResp));
             return ;
 
         }
@@ -93,14 +101,15 @@ public class CourseServlet extends HttpServlet {
         {
             //resp.sendRedirect("/auth");
             resp.setStatus(403);
+            ErrorResponse errResp = new ErrorResponse(500, "Cannot Authenticate");
+            respWriter.write(mapper.writeValueAsString(errResp));
             System.out.println("Unauthorized Command");
             return;
         }
 
 
-        try{
 
-            PrintWriter respWriter = resp.getWriter();
+
             ClassDetails registerCourseRequest = mapper.readValue(req.getInputStream() , ClassDetails.class);
             registerCourseRequest.setOpen(new DateParser().htmlWindow(registerCourseRequest.getRegistrationTime() , registerCourseRequest.getRegistrationClosedTime()));
 
@@ -113,17 +122,20 @@ public class CourseServlet extends HttpServlet {
             }
         }catch (JsonProcessingException jpe)
         {
+            logger.error(jpe.getMessage());
             resp.sendError(500 , "Failure Mapping classinfo to String");
             return;
         }
         catch(IOException ioe)
         {
+            logger.error(ioe.getMessage());
             resp.sendError(500 , "Failure Reading  File");
             return;
         }
         catch(Exception e)
         {
                 e.printStackTrace();
+            logger.error(e.getMessage());
             resp.sendError(500 , "e.getMessage()");
             return;
         }
@@ -148,8 +160,9 @@ public class CourseServlet extends HttpServlet {
                 resp.setStatus(404);
                 return;
             }else if (status == Authorization.STUDENT.toString()){
+                ErrorResponse errResp = new ErrorResponse(404, "Unauthorized command");
+                respWriter.write(mapper.writeValueAsString(errResp));
 
-                resp.sendError(404 , "Unauthorized command");
             }else
             {
                 DeleteRequest course = mapper.readValue(req.getInputStream() , DeleteRequest.class);
@@ -161,7 +174,7 @@ public class CourseServlet extends HttpServlet {
 
         }catch(Exception e)
         {
-
+            logger.error(e.getMessage());
         }
     }
 }

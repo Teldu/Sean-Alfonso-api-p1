@@ -12,6 +12,8 @@ import org.bson.Document;
 import org.bson.codecs.configuration.CodecProvider;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -25,7 +27,7 @@ import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
 public class RegistrationCatalog implements CrudRepository<Classdto> {
 
-   // private final Logger logger = LogManager.getLogger(StudentDashboard.class);
+    private final Logger logger = LoggerFactory.getLogger(RegistrationCatalog.class);
 
     private ObjectMapper mapper = new ObjectMapper();
     String DatabaseName = "SchoolDatabase";
@@ -81,6 +83,7 @@ public class RegistrationCatalog implements CrudRepository<Classdto> {
         } catch (Exception e) {
            // logger.error(e.getMessage());
             e.printStackTrace();
+            logger.error(e.getMessage());
             throw new DataSourceException("An unexpected exception occurred.", e);
         }
 
@@ -131,6 +134,7 @@ public class RegistrationCatalog implements CrudRepository<Classdto> {
 
         }catch (Exception e)
         {
+            logger.error(e.getMessage());
 
         }
         return true;
@@ -160,7 +164,8 @@ public class RegistrationCatalog implements CrudRepository<Classdto> {
             courseCollection.findOneAndUpdate(queryDoc, new Document("$pull", new Document("studentsRegistered", dropedStudent)));
 
         } catch (Exception e) {
-            e.printStackTrace();
+
+            logger.error(e.getMessage());
             throw new DataSourceException("Unexpected exception", e);
         }
     }
@@ -189,7 +194,7 @@ public class RegistrationCatalog implements CrudRepository<Classdto> {
             courseCollection.findOneAndUpdate(queryDoc, new Document("$push", new Document("studentsRegistered", addedStudent)));
 
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
             throw new DataSourceException("Unexpected exception", e);
         }
     }
@@ -214,7 +219,7 @@ public class RegistrationCatalog implements CrudRepository<Classdto> {
 
 
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
             throw new DataSourceException("Unexpected exception", e);
         }
     }
@@ -233,7 +238,7 @@ public class RegistrationCatalog implements CrudRepository<Classdto> {
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            logger.error(e.getMessage());
             throw new DataSourceException("Possibly a connection exception" , e);
         }
     }
@@ -265,7 +270,7 @@ public class RegistrationCatalog implements CrudRepository<Classdto> {
 
         }catch (Exception e)
         {
-
+            logger.error(e.getMessage());
         }
         return true;
     }
@@ -292,7 +297,7 @@ public class RegistrationCatalog implements CrudRepository<Classdto> {
 
         }catch (Exception e)
         {
-
+            logger.error(e.getMessage());
         }
         return true;
     }
@@ -319,7 +324,7 @@ public class RegistrationCatalog implements CrudRepository<Classdto> {
 
         }catch (Exception e)
         {
-
+            logger.error(e.getMessage());
         }
         return true;
     }
@@ -335,7 +340,7 @@ public class RegistrationCatalog implements CrudRepository<Classdto> {
             return newUser;
 
         } catch (Exception e) {
-            //logger.error(e.getMessage());
+            logger.error(e.getMessage());
             throw new DataSourceException("An unexpected exception occurred.", e);
         }
     }
@@ -380,7 +385,7 @@ public class RegistrationCatalog implements CrudRepository<Classdto> {
             return outClassList;
 
         } catch (Exception e) {
-            //logger.error(e.getMessage());
+            logger.error(e.getMessage());
             throw new DataSourceException("An unexpected exception occurred.", e);
         }
     }
@@ -407,7 +412,7 @@ public class RegistrationCatalog implements CrudRepository<Classdto> {
             }
 
         } catch (Exception e) {
-           // logger.error(e.getMessage());
+            logger.error(e.getMessage());
             throw new DataSourceException("An unexpected exception occurred.", e);
         }
         return newUser;
@@ -435,7 +440,7 @@ public class RegistrationCatalog implements CrudRepository<Classdto> {
 
         }catch (Exception e)
         {
-
+            logger.error(e.getMessage());
         }
 
         return null;
@@ -456,7 +461,7 @@ public class RegistrationCatalog implements CrudRepository<Classdto> {
             return classNames;
 
         } catch (Exception e) {
-           // logger.error(e.getMessage());
+            logger.error(e.getMessage());
             throw new DataSourceException("An unexpected exception occurred.", e);
         }
 
@@ -498,7 +503,7 @@ public class RegistrationCatalog implements CrudRepository<Classdto> {
             return true;
 
         } catch (Exception e) {
-            // logger.error(e.getMessage());
+            logger.error(e.getMessage());
             throw new DataSourceException("An unexpected exception occurred.", e);
         }
     }

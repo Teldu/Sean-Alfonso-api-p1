@@ -8,7 +8,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.services.UserService;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -23,7 +24,7 @@ public class UserServlet extends HttpServlet {
 
     private final UserService userService;
     private final ObjectMapper mapper;
-    private final Logger logger = LogManager.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(UserServlet.class);
 
     public UserServlet(UserService userService , ObjectMapper mapper) {
         this.mapper = mapper;
@@ -57,7 +58,7 @@ public class UserServlet extends HttpServlet {
 
         }catch(Exception e)
         {
-
+            logger.error(e.getMessage());
         }
     }
 

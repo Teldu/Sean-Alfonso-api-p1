@@ -2,6 +2,7 @@ package com.servlets;
 
 import com.documents.AppUser;
 import com.dto.Credentials;
+import com.dto.ErrorResponse;
 import com.dto.Principal;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
@@ -10,7 +11,8 @@ import com.util.exceptions.AuthenticationException;
 import com.web.security.TokenGenerator;
 import io.jsonwebtoken.Claims;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -27,7 +29,7 @@ public class AuthServlet extends HttpServlet {
     private final UserService userService;
     private final ObjectMapper mapper;
     private final TokenGenerator tokenGenerator;
-    private final Logger logger = LogManager.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(AuthServlet.class);
 
     public AuthServlet(UserService userService , ObjectMapper mapper , TokenGenerator tokenGenerator) {
         this.mapper = mapper;
@@ -56,18 +58,19 @@ public class AuthServlet extends HttpServlet {
 
 
         } catch (AuthenticationException ae) {
-            resp.setStatus(401); // server's fault
-            //respWriter.write(mapper.writeValueAsString(errResp));
+            logger.error(ae.getMessage());
+            ErrorResponse errResp = new ErrorResponse(401, "Cannot Authenticate");
+            respWriter.write(mapper.writeValueAsString(errResp));
         }  catch (Exception e) {
-            e.printStackTrace();
+
+            logger.error(e.getMessage());
             resp.setStatus(500); // server's fault
-            //ErrorResponse errResp = new ErrorResponse(500, "The server experienced an issue, please try again later.");
-            // respWriter.write(mapper.writeValueAsString(errResp));
+            ErrorResponse errResp = new ErrorResponse(500, "The server experienced an issue, please try again later.");
+            respWriter.write(mapper.writeValueAsString(errResp));
         }
 
 
-        // RequestDispatcher requestDispatcher = req.getRequestDispatcher("auth-user");
-        // requestDispatcher.forward(req , resp);
+
     }
 
 }

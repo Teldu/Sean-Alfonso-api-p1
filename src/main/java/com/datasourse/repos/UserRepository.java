@@ -15,6 +15,8 @@ import com.util.exceptions.DataSourceException;
 import org.bson.codecs.configuration.CodecProvider;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -29,6 +31,8 @@ public class UserRepository implements CrudRepository<AppUser> {
     String AdminCollectionName = "Admin";
     CodecProvider pojoCodecProvider = PojoCodecProvider.builder().automatic(true).build();
     CodecRegistry pojoCodecRegistry = fromRegistries(getDefaultCodecRegistry(), fromProviders(pojoCodecProvider));
+    private final Logger logger = LoggerFactory.getLogger(UserRepository.class);
+
     public UserRepository(MongoClient mongoClient){ this.mongoClient = mongoClient;}
 
     public AppUser findUserByCredentials(String username, String password) {
@@ -76,10 +80,10 @@ public class UserRepository implements CrudRepository<AppUser> {
             return authUser;
 
         } catch (JsonMappingException jme) {
-            jme.printStackTrace(); // TODO log this to a file
+            logger.error(jme.getMessage());
             throw new DataSourceException("An exception occurred while mapping the document.", jme);
         } catch (Exception e) {
-            e.printStackTrace(); // TODO log this to a file
+            logger.error(e.getMessage());
             throw new DataSourceException("An unexpected exception occurred.", e);
         }
     }
@@ -137,9 +141,9 @@ public class UserRepository implements CrudRepository<AppUser> {
             return authUser;
 
         } catch (JsonProcessingException jme) {
-            jme.printStackTrace();
+            logger.error(jme.getMessage());
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
 
         return null;
@@ -188,7 +192,7 @@ public class UserRepository implements CrudRepository<AppUser> {
 
         }catch (Exception e)
         {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
     }
 
@@ -218,7 +222,7 @@ public class UserRepository implements CrudRepository<AppUser> {
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            logger.error(e.getMessage());
 
             throw new DataSourceException("Unexpected exception" , e);
         }
@@ -244,7 +248,7 @@ public class UserRepository implements CrudRepository<AppUser> {
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+           logger.error(e.getMessage());
             throw new DataSourceException("Unexpected exception" , e);
         }
     }
@@ -271,7 +275,7 @@ public class UserRepository implements CrudRepository<AppUser> {
             return newUser;
 
         } catch (Exception e) {
-            e.printStackTrace(); // TODO log this to a file
+            logger.error(e.getMessage());
             throw new DataSourceException("An unexpected exception occurred.", e);
         }
 
@@ -296,7 +300,7 @@ public class UserRepository implements CrudRepository<AppUser> {
             return newUser;
 
         } catch (Exception e) {
-            e.printStackTrace(); // TODO log this to a file
+            logger.error(e.getMessage());
             throw new DataSourceException("An unexpected exception occurred.", e);
         }
 

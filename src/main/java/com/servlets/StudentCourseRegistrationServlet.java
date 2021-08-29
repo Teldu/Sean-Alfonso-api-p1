@@ -2,6 +2,7 @@ package com.servlets;
 
 import com.documents.Authorization;
 import com.documents.ClassDetails;
+import com.dto.ErrorResponse;
 import com.dto.Principal;
 import com.dto.RequestObjects.Request;
 import com.dto.SheildedUser;
@@ -10,6 +11,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.services.UserService;
 import com.util.exceptions.DataSourceException;
 import com.util.exceptions.InvalidRequestException;
+import org.apache.logging.log4j.LogManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -22,7 +26,7 @@ public class StudentCourseRegistrationServlet extends HttpServlet {
 
     private final UserService userService;
     private final ObjectMapper mapper;
-
+    private final Logger logger = LoggerFactory.getLogger(StudentCourseRegistrationServlet.class);
 
     public StudentCourseRegistrationServlet(UserService userService , ObjectMapper mapper) {
         this.mapper = mapper;
@@ -36,26 +40,33 @@ public class StudentCourseRegistrationServlet extends HttpServlet {
     }
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setContentType("application/json");
-        Principal principal = (Principal) req.getAttribute("principal");
+           resp.setContentType("application/json");
+        PrintWriter respWriter = resp.getWriter();
+           try {
+               Principal principal = (Principal) req.getAttribute("principal");
+
         if(principal == null)
         {
-            resp.sendError(400 , "session expired");
+            ErrorResponse errResp = new ErrorResponse(400, "null sesion");
+            respWriter.write(mapper.writeValueAsString(errResp));
+
             return;
         }
 
         if (principal.getType().equals(Authorization.ADMIN.toString()))
         {
             System.out.println(principal.getUsername());
-            resp.sendError(403 , "Admin Cannot Register for Courses");
+            ErrorResponse errResp = new ErrorResponse(400,"Admin Cannot Register for Courses");
+            respWriter.write(mapper.writeValueAsString(errResp));
+
         }
 
-        try {
+
 
 
             SheildedUser appUser  = userService.FindUserName(principal.getUsername());
             System.out.println(appUser.toString());
-            PrintWriter respWriter = resp.getWriter();
+
             Request request = mapper.readValue(req.getInputStream() , Request.class);
             String requestJsonFrom = mapper.writeValueAsString(request);
             respWriter.write(requestJsonFrom);
@@ -63,13 +74,15 @@ public class StudentCourseRegistrationServlet extends HttpServlet {
 
             if(request == null)
             {
-                resp.sendError(401 , "request null");
+                ErrorResponse errResp = new ErrorResponse(500, "Server error");
+                respWriter.write(mapper.writeValueAsString(errResp));
                 return;
             }
 
             if( appUser == null)
             {
-                resp.sendError(402 , "appUser null");
+                ErrorResponse errResp = new ErrorResponse(500, "Server error");
+                respWriter.write(mapper.writeValueAsString(errResp));
                 return;
             }
 
@@ -96,21 +109,25 @@ public class StudentCourseRegistrationServlet extends HttpServlet {
         }
         catch(InvalidRequestException e)
         {
-            resp.getWriter().write("<h1>" + e.getMessage() + "</h1>");
-            resp.setStatus(301);
+            logger.error(e.getMessage());
+            ErrorResponse errResp = new ErrorResponse(500, "Server error");
+            respWriter.write(mapper.writeValueAsString(errResp));
         }catch(DataSourceException e)
         {
-            resp.sendError(401 , "file data ");
+            logger.error(e.getMessage());
+            ErrorResponse errResp = new ErrorResponse(500, "Server error");
+            respWriter.write(mapper.writeValueAsString(errResp));
         } catch(JsonProcessingException e)
         {
-            resp.sendError(500 , "Error on Json");
-        }catch(IOException e)
-        {
-            resp.sendError(500 , "Error on File reader");
+            logger.error(e.getMessage());
+            ErrorResponse errResp = new ErrorResponse(500, "Server error");
+            respWriter.write(mapper.writeValueAsString(errResp));
+
         }catch(Exception e)
         {
-            e.printStackTrace();
-            resp.sendError(500 , e.toString());
+            logger.error(e.getMessage());
+            ErrorResponse errResp = new ErrorResponse(500, "Server error");
+            respWriter.write(mapper.writeValueAsString(errResp));
         }
 
 

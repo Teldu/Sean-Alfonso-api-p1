@@ -20,6 +20,7 @@ com\documents\MeetingPeriods.class
 com\datasourse\repos\UserRepository.class
 com\util\exceptions\AuthenticationException.class
 com\servlets\CourseServlet.class
+com\dto\ErrorResponse.class
 com\documents\AppUser.class
 com\util\DateParser.class
 com\web\filters\CorsFilter.class

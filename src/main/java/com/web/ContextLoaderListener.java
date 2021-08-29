@@ -1,5 +1,6 @@
 package com.web;
 
+
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.core.joran.spi.JoranException;
@@ -55,7 +56,7 @@ public class ContextLoaderListener implements ServletContextListener {
             context.addServlet("StudentCourseRegistrationServlet", studentCourseRegistrationServlet).addMapping("/users/registration");
             context.addServlet("StudentCourseViewServlet", viewStudentCourseServlet).addMapping("/viewStudentCourse");
             context.addServlet("AuthServlet", authServlet).addMapping("/auth");
-            //configureLogback(context);
+            configureLogback(context);
         }catch (Exception e)
         {
             e.printStackTrace();
