@@ -190,6 +190,11 @@ public class UserService {
             throw new InvalidRequestException("Provided Information is Invalid");
         }
 
+        if(registrationCatalog.GetClassDetailsOf(courseName).getStudentsRegistered().contains(dropedStudent) == true)
+        {
+            throw new InvalidRequestException("Can not drop unattained class ");
+        }
+
        userRepo.RemoveUserFromClass(username , courseName);
        registrationCatalog.RemoveStudentFromCourse(courseName, dropedStudent);
     }
