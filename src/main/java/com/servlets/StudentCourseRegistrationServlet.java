@@ -114,7 +114,7 @@ public class StudentCourseRegistrationServlet extends HttpServlet {
         }catch(DataSourceException e)
         {
             logger.error(e.getMessage());
-            ErrorResponse errResp = new ErrorResponse(500, "Server error");
+            ErrorResponse errResp = new ErrorResponse(500, e.getMessage());
             respWriter.write(mapper.writeValueAsString(errResp));
         } catch(JsonProcessingException e)
         {

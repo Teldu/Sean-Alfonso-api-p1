@@ -158,13 +158,12 @@ public class UserService {
         ClassDetails classDetails = registrationCatalog.GetClassDetailsOf(courseName);
 
         if(courseName == null || addedStudent == null || username == null || registrationCatalog.GetClassDetailsOf(courseName) == null) { throw new InvalidRequestException("Provided Information is Invalid"); }
-        if(classDetails.isOpen() == false) {
-            System.out.println("Cannot Register for CLOSED Course");
-            return;
-        }
+//        if(classDetails.isOpen() == false) {
+//            throw new InvalidRequestException("Cannot Register for CLOSED Course");
+//        }
         if(classDetails.getStudentsRegistered().size() >= classDetails.getClassSize()) {
-            System.out.println("Class is full");
-            return;
+            throw new InvalidRequestException("Class is full");
+
         }
         //if in window
         if(dateParser.htmlWindow(classDetails.getRegistrationTime(), classDetails.getRegistrationClosedTime()))

@@ -8,6 +8,7 @@ import com.dto.RequestObjects.RegisterCourseRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.datasourse.repos.RegistrationCatalog;
 import com.services.UserService;
+import com.util.DateParser;
 import org.apache.logging.log4j.LogManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,9 +82,10 @@ public class CourseEditorServlet extends HttpServlet {
                         case "all":
                             courseDetails.setClassName(course.getClassName());
                             courseDetails.setClassSize(course.getClassSize());
-                            courseDetails.setOpen(course.isOpen());
                             courseDetails.setRegistrationTime(course.getRegistrationTime());
                             courseDetails.setRegistrationClosedTime(course.getRegistrationClosedTime());
+                            // check if class is still in registration window
+                            courseDetails.setOpen(new DateParser().htmlWindow (courseDetails.getRegistrationTime(),courseDetails.getRegistrationTime()));
                             courseDetails.setMeetingPeriod(course.getMeetingPeriod());
                             userService.updateCourse( course.getTargetCourse(), courseDetails);
                             String classInfo = mapper.writeValueAsString(course);
@@ -93,6 +95,8 @@ public class CourseEditorServlet extends HttpServlet {
                     case "time":
                         courseDetails.setRegistrationTime(course.getRegistrationTime());
                         courseDetails.setRegistrationClosedTime(course.getRegistrationClosedTime());
+                        // check if class is still in registration window
+                        courseDetails.setOpen(new DateParser().htmlWindow (courseDetails.getRegistrationTime(),courseDetails.getRegistrationTime()));
                         registrationCatalog.UpdateFull(course.getTargetCourse(), courseDetails);
                         String classInfo1 = mapper.writeValueAsString(course);
                         respWriter.write(classInfo1 + " Updated!");
