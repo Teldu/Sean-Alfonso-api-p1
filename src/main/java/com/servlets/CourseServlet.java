@@ -48,17 +48,17 @@ public class CourseServlet extends HttpServlet {
             return;
         }
 
-        DeleteRequest courseName =  mapper.readValue(req.getInputStream() , DeleteRequest.class);
+        String courseName = (String) req.getAttribute("className");
 
         try{
-            if(courseName == null || courseName.getClassName().isEmpty())//TODO Students shoudn't see all registered students : Admin Can see the all Registered Students
+            if(courseName == null || courseName.isEmpty())//TODO Students shoudn't see all registered students : Admin Can see the all Registered Students
             {
                 List<ClassDetails> allClassDetails = registrationCatalog.showClasses();
                 System.out.println(allClassDetails);
                 respWriter.write(mapper.writeValueAsString(allClassDetails));
 
             }else   {
-                ClassDetails registerCourseRequest = registrationCatalog.GetClassDetailsOf(courseName.getClassName());
+                ClassDetails registerCourseRequest = registrationCatalog.GetClassDetailsOf(courseName);
                 System.out.println(registerCourseRequest);
                 respWriter.write(mapper.writeValueAsString(registerCourseRequest));
             }
