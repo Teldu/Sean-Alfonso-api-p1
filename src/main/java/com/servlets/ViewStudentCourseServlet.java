@@ -35,7 +35,7 @@ public class ViewStudentCourseServlet extends HttpServlet {
         Principal principal = (Principal) req.getAttribute("principal");
         // finding the current user from the principal in the database
         SheildedUser appUser = (principal == null) ? null : userService.FindUserName(principal.getUsername());
-        DeleteRequest courseName =  mapper.readValue(req.getInputStream() , DeleteRequest.class);
+        String courseName = (String) req.getAttribute("className");
         if(appUser == null)
         {
             resp.setStatus(401);
@@ -46,7 +46,7 @@ public class ViewStudentCourseServlet extends HttpServlet {
 
         PrintWriter respWriter = resp.getWriter();
         try{
-            if(courseName == null || courseName.getClassName().isEmpty() || courseName.getClassName().equals("All"))
+            if(courseName == null || courseName.isEmpty() || courseName.equals("All"))
             {
                respWriter.write(mapper.writeValueAsString(appUser.getRegisteredClasses()));
             }else   {

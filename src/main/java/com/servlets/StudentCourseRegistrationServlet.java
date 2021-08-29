@@ -58,7 +58,6 @@ public class StudentCourseRegistrationServlet extends HttpServlet {
             System.out.println(principal.getUsername());
             ErrorResponse errResp = new ErrorResponse(400,"Admin Cannot Register for Courses");
             respWriter.write(mapper.writeValueAsString(errResp));
-
         }
 
 
