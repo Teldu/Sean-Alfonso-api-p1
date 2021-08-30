@@ -99,8 +99,8 @@ public class StudentCourseRegistrationServlet extends HttpServlet {
                 ClassDetails tempClass = userService.getClassDetailsOf(request.getName());
                 if(tempClass.getStudentsRegistered().contains(appUser.getFirstName()))
                 {
-                    resp.setStatus(400);
-                    resp.sendError(400 , "Already Registered For Class");
+                    resp.setStatus(403);
+                    resp.sendError(403 , "Already Registered For Class");
                     return;
                 }
                 userService.AddClass( request.getName() , appUser.getFirstName(), appUser.getUsername());
