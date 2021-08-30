@@ -47,6 +47,7 @@ public class StudentCourseRegistrationServlet extends HttpServlet {
 
         if(principal == null)
         {
+            resp.setStatus(400);
             ErrorResponse errResp = new ErrorResponse(400, "null sesion");
             respWriter.write(mapper.writeValueAsString(errResp));
 
@@ -56,6 +57,7 @@ public class StudentCourseRegistrationServlet extends HttpServlet {
         if (principal.getType().equals(Authorization.ADMIN.toString()))
         {
             System.out.println(principal.getUsername());
+            resp.setStatus(400);
             ErrorResponse errResp = new ErrorResponse(400,"Admin Cannot Register for Courses");
             respWriter.write(mapper.writeValueAsString(errResp));
         }
@@ -97,6 +99,7 @@ public class StudentCourseRegistrationServlet extends HttpServlet {
                 ClassDetails tempClass = userService.getClassDetailsOf(request.getName());
                 if(tempClass.getStudentsRegistered().contains(appUser.getFirstName()))
                 {
+                    resp.setStatus(400);
                     resp.sendError(400 , "Already Registered For Class");
                     return;
                 }
@@ -109,22 +112,26 @@ public class StudentCourseRegistrationServlet extends HttpServlet {
         catch(InvalidRequestException e)
         {
             logger.error(e.getMessage());
+            resp.setStatus(400);
             ErrorResponse errResp = new ErrorResponse(400, e.getMessage());
             respWriter.write(mapper.writeValueAsString(errResp));
         }catch(DataSourceException e)
         {
             logger.error(e.getMessage());
+            resp.setStatus(500);
             ErrorResponse errResp = new ErrorResponse(500, e.getMessage());
             respWriter.write(mapper.writeValueAsString(errResp));
         } catch(JsonProcessingException e)
         {
             logger.error(e.getMessage());
+            resp.setStatus(500);
             ErrorResponse errResp = new ErrorResponse(500, "Server error");
             respWriter.write(mapper.writeValueAsString(errResp));
 
         }catch(Exception e)
         {
             logger.error(e.getMessage());
+            resp.setStatus(500);
             ErrorResponse errResp = new ErrorResponse(500, "Server error");
             respWriter.write(mapper.writeValueAsString(errResp));
         }

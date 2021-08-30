@@ -59,6 +59,7 @@ public class AuthServlet extends HttpServlet {
 
         } catch (AuthenticationException ae) {
             logger.error(ae.getMessage());
+            resp.setStatus(401);
             ErrorResponse errResp = new ErrorResponse(401, "Cannot Authenticate");
             respWriter.write(mapper.writeValueAsString(errResp));
         }  catch (Exception e) {

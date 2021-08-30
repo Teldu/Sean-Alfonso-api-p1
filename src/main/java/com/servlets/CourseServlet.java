@@ -123,6 +123,7 @@ public class CourseServlet extends HttpServlet {
         }catch (JsonProcessingException jpe)
         {
             logger.error(jpe.getMessage());
+            resp.setStatus(500);
             resp.sendError(500 , "Failure Mapping classinfo to String");
             return;
         }
@@ -160,6 +161,7 @@ public class CourseServlet extends HttpServlet {
                 resp.setStatus(404);
                 return;
             }else if (status == Authorization.STUDENT.toString()){
+                resp.setStatus(404);
                 ErrorResponse errResp = new ErrorResponse(404, "Unauthorized command");
                 respWriter.write(mapper.writeValueAsString(errResp));
 

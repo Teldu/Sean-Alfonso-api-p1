@@ -56,6 +56,7 @@ public class ViewStudentCourseServlet extends HttpServlet {
 
         }   catch(InvalidRequestException e)
         {
+            resp.setStatus(500);
 
             ErrorResponse errResp = new ErrorResponse(500, "Server error");
             respWriter.write(mapper.writeValueAsString(errResp));
@@ -64,6 +65,7 @@ public class ViewStudentCourseServlet extends HttpServlet {
         catch(Exception e)
         {
             logger.error(e.getMessage());
+            resp.setStatus(500);
             ErrorResponse errResp = new ErrorResponse(500, "Server error");
             respWriter.write(mapper.writeValueAsString(errResp));
             return;

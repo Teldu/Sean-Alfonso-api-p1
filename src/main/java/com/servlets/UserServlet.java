@@ -82,16 +82,19 @@ public class UserServlet extends HttpServlet {
         catch(MismatchedInputException mie)
         {
             logger.error(mie.getMessage());
+            resp.setStatus(400);
             resp.sendError(400 , "UnExpected Input");
         }
         catch(IOException ioe)
         {
             logger.error(ioe.getMessage());
+            resp.setStatus(404);
             resp.sendError(404 , "File not found");
         }
         catch(Exception e)
         {
             logger.error(e.getMessage());
+            resp.setStatus(500);
             resp.sendError(500 , "We are sorry");
         }
 

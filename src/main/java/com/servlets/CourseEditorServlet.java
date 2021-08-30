@@ -58,6 +58,7 @@ public class CourseEditorServlet extends HttpServlet {
                 respWriter.write(mapper.writeValueAsString(errResp));
                 return;
             }else if (status == Authorization.STUDENT.toString()){
+                resp.setStatus(404);
                 ErrorResponse errResp = new ErrorResponse(404 , "Unauthorized command");
                 respWriter.write(mapper.writeValueAsString(errResp));
             }else
@@ -70,6 +71,7 @@ public class CourseEditorServlet extends HttpServlet {
                 ClassDetails courseDetails = registrationCatalog.GetClassDetailsOf(course.getTargetCourse());
                 if(courseDetails == null)
                 {
+                    resp.setStatus(500);
                     ErrorResponse errResp = new ErrorResponse(500 , "null course");
                     respWriter.write(mapper.writeValueAsString(errResp));
                     return;
@@ -114,6 +116,7 @@ public class CourseEditorServlet extends HttpServlet {
 
         }catch(Exception e)
         {
+            resp.setStatus(500);
             logger.error(e.getMessage());
         }
     }
