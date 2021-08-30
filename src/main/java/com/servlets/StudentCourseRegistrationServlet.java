@@ -112,8 +112,8 @@ public class StudentCourseRegistrationServlet extends HttpServlet {
         catch(InvalidRequestException e)
         {
             logger.error(e.getMessage());
-            resp.setStatus(400);
-            ErrorResponse errResp = new ErrorResponse(400, e.getMessage());
+            resp.setStatus(402);
+            ErrorResponse errResp = new ErrorResponse(402, e.getMessage());
             respWriter.write(mapper.writeValueAsString(errResp));
         }catch(DataSourceException e)
         {

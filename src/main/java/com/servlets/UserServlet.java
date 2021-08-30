@@ -40,7 +40,7 @@ public class UserServlet extends HttpServlet {
         if(principal == null)
         {
             respWriter.write("<h1></h1>");
-            //resp.setStatus(401);
+            resp.setStatus(401);
             return;
         }
 
