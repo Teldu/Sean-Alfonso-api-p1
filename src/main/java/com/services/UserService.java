@@ -189,7 +189,7 @@ public class UserService {
             throw new InvalidRequestException("Provided Information is Invalid");
         }
 
-        if(registrationCatalog.GetClassDetailsOf(courseName).getStudentsRegistered().contains(dropedStudent) == false)
+        if(registrationCatalog.GetClassDetailsOf(courseName).getStudentsRegistered().contains(dropedStudent) == false || registrationCatalog.GetClassDetailsOf(courseName).isOpen() == false)
         {
             System.out.println("Failed to Drop Course");
             throw new InvalidRequestException("Can not drop unattained class ");
